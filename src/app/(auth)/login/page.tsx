@@ -1,0 +1,149 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader2, LogInIcon } from "lucide-react";
+import { useAuth } from "@/context/auth-context";
+import { SiGithub, SiGoogle } from "@icons-pack/react-simple-icons";
+import Link from "next/link";
+
+export default function LoginPage() {
+  const { signIn, auth, error: authError, isPending } = useAuth();
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState<string | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+    setError(null);
+  };
+
+  useEffect(() => {
+    auth.oneTap();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      await signIn.email({
+        email: form.email,
+        password: form.password,
+      });
+    } catch (err: any) {
+      setError(err?.message || "Login failed");
+    }
+  };
+
+  const handleSocialLogin = async (provider: string) => {
+    try {
+      const data = await signIn.social({
+        provider,
+      });
+      console.log(data);
+    } catch (err: any) {
+      setError(err?.message || "Login failed");
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <Card className="w-full max-w-md shadow-xl border-0 bg-card/80 backdrop-blur-md">
+        <CardHeader>
+          <CardTitle>Sign in to your account</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form
+            className="space-y-6"
+            onSubmit={handleSubmit}
+            autoComplete="off"
+          >
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium mb-1">
+                Email
+              </label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={form.email}
+                onChange={handleChange}
+                placeholder="you@email.com"
+                disabled={isPending}
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium mb-1"
+              >
+                Password
+              </label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                value={form.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                disabled={isPending}
+              />
+            </div>
+            {(error || authError?.message) && (
+              <div className="text-destructive text-sm font-medium">
+                {error || authError?.message || "Login failed"}
+              </div>
+            )}
+            <Button
+              type="submit"
+              className="w-full flex items-center gap-2"
+              disabled={isPending}
+            >
+              {isPending ? (
+                <>
+                  <Loader2 className="animate-spin" size={18} />
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  <LogInIcon size={18} />
+                  Sign in
+                </>
+              )}
+            </Button>
+          </form>
+          <div className="flex flex-col gap-2 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => handleSocialLogin("google")}
+            >
+              <SiGoogle size={18} />
+              Sign in with Google
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => handleSocialLogin("github")}
+            >
+              <SiGithub size={18} />
+              Sign in with GitHub
+            </Button>
+          </div>
+          <div className="mt-6 text-center text-sm text-muted-foreground">
+            Don&apos;t have an account?{" "}
+            <Link
+              href="/register"
+              className="text-primary underline underline-offset-2"
+            >
+              Register
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

@@ -1,0 +1,298 @@
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
+import { ProductSchema, ProductLinkSchema, ProductImageSchema } from "@/types/product";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { TrashIcon, PlusCircledIcon } from "@radix-ui/react-icons";
+import { trpc } from "@/trpc/client";
+import { useState } from "react";
+import { CheckCircleIcon, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+const ProductFormSchema = ProductSchema.omit({
+  id: true,
+  authorId: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  name: z.string().min(1, { message: "Product name is required." }),
+  description: z.string().min(1, { message: "Description is required." }),
+  price: z.string().min(1, { message: "Price is required." }),
+  images: z.array(ProductImageSchema.extend({
+    url: z.url("Image URL is required."),
+  })),
+  links: z.array(ProductLinkSchema.extend({
+    url: z.url("Link URL is required."),
+    title: z.string().min(1, 'Link title is required.'),
+  })),
+});
+
+type ProductFormValues = z.infer<typeof ProductFormSchema>;
+
+export default function NewProductPage() {
+  const form = useForm<ProductFormValues>({
+    resolver: zodResolver(ProductFormSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      price: "",
+      images: [],
+      icon: "",
+      category: [],
+      links: [],
+    },
+    mode: "onChange",
+  });
+
+  const { fields: imageFields, append: appendImage, remove: removeImage } = useFieldArray({
+    name: "images",
+    control: form.control,
+  });
+
+  const { fields: linkFields, append: appendLink, remove: removeLink } = useFieldArray({
+    name: "links",
+    control: form.control,
+  });
+
+  const router = useRouter();
+  const { mutate: createProduct, isPending } = trpc.createProduct.useMutation();
+  const [error, setError] = useState<string | null>(null);
+  const [isCreated, setIsCreated] = useState(false);
+
+  async function onSubmit(data: ProductFormValues) {
+    console.log("Form submitted with data:", data);
+    // TODO: Call a server action to save the product data to the database.
+    // Example: await createProductAction(data);
+    createProduct(data, {
+      onSuccess: (data) => {
+        console.log("Product created:", data);
+        router.push(`/dashboard/products`);
+        setIsCreated(true);
+      },
+      onError: (error) => {
+        console.error("Error creating product:", error);
+        setError(error.message);
+      },
+    });
+  }
+
+  return (
+    <div className="max-w-2xl mx-auto p-4 sm:p-6 lg:p-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold">Create a New Product</h1>
+        <p className="text-muted-foreground">Fill out the form to add a new product to your store.</p>
+      </div>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Product Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g. My Awesome SaaS" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Describe your product in a few sentences."
+                    className="resize-none"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Price</FormLabel>
+                <FormControl>
+                  <Input type="text" inputMode="decimal" placeholder="e.g. 29.99" {...field} />
+                </FormControl>
+                <FormDescription>Enter the price in USD.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="icon"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Icon URL</FormLabel>
+                <FormControl>
+                  <Input placeholder="https://example.com/icon.png" {...field} />
+                </FormControl>
+                 <FormDescription>Optional: A URL for the product&apos;s icon.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Categories</FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="e.g. SaaS, Developer Tools" 
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      field.onChange(value ? value.split(',').map(c => c.trim()) : []);
+                    }}
+                    value={Array.isArray(field.value) ? field.value.join(', ') : ''}
+                  />
+                </FormControl>
+                <FormDescription>Comma-separated list of categories.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div>
+            <h3 className="text-lg font-medium">Product Images</h3>
+            <div className="space-y-4 mt-2">
+              {imageFields.map((field, index) => (
+                <div key={field.id} className="flex items-center space-x-2">
+                   <FormField
+                    control={form.control}
+                    name={`images.${index}.url`}
+                    render={({ field }) => (
+                      <FormItem className="flex-grow">
+                        <FormControl>
+                          <Input {...field} placeholder="https://example.com/image.png" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="button" variant="ghost" size="icon" onClick={() => removeImage(index)}>
+                    <TrashIcon className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+             <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-2"
+              onClick={() => appendImage({ id: crypto.randomUUID(), url: '' })}
+            >
+              <PlusCircledIcon className="mr-2 h-4 w-4" />
+              Add Image
+            </Button>
+          </div>
+          
+          <div>
+            <h3 className="text-lg font-medium">Product Links</h3>
+            <div className="space-y-4 mt-2">
+              {linkFields.map((field, index) => (
+                 <div key={field.id} className="p-4 border rounded-md space-y-4 relative">
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeLink(index)}
+                        className="absolute top-2 right-2"
+                    >
+                        <TrashIcon className="h-4 w-4" />
+                    </Button>
+                    <FormField
+                      control={form.control}
+                      name={`links.${index}.title`}
+                      render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Link Title</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="e.g. Website" />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                     <FormField
+                      control={form.control}
+                      name={`links.${index}.url`}
+                      render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Link URL</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="https://example.com" />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                     <FormField
+                      control={form.control}
+                      name={`links.${index}.description`}
+                      render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Link Description (Optional)</FormLabel>
+                            <FormControl>
+                              <Textarea {...field} placeholder="A short description about this link." />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                 </div>
+              ))}
+            </div>
+            <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="mt-2"
+                onClick={() => appendLink({ id: crypto.randomUUID(), title: '', url: '', description: ''})}
+              >
+              <PlusCircledIcon className="mr-2 h-4 w-4" />
+              Add Link
+            </Button>
+          </div>
+
+          {error && <p className="text-destructive">{error}</p>}
+
+          <Button type="submit" className="w-full" disabled={isPending || isCreated}>
+            {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : isCreated ? <CheckCircleIcon className="w-4 h-4" /> : "Create Product"}
+          </Button>
+        </form>
+      </Form>
+    </div>
+  );
+}
