@@ -1,104 +1,68 @@
 "use client";
 
-import {
-  ArrowRight,
-  ArrowUpRight,
-  BadgeCent,
-  Bot,
-  Camera,
-  CircleDollarSign,
-  Cog,
-  Play,
-  ShoppingBag,
-  Sparkles,
-  UploadCloud,
-} from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import {
+  BrainCircuit,
+  Circle,
+  Component,
+  Database,
+  Feather,
+  GitBranch,
+  Search,
+  Sparkles,
+  Triangle,
+} from "lucide-react";
+import { Badge } from "./ui/badge";
 
 export const Hero = () => {
   return (
-    <section className="py-24 lg:py-0">
-      <div className="container">
-        <div className="grid items-center gap-8 lg:grid-cols-2">
-          <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-            <Badge variant="outline">
-              Prodfind is here!
-              <ArrowUpRight className="ml-2 size-4" />
-            </Badge>
-            <h1 className="my-6 text-pretty text-5xl font-bold lg:text-7xl bg-gradient-to-r from-primary via-foreground to-primary bg-clip-text text-transparent">
-              A fastest way to find products
-            </h1>
-            <p className="text-muted-foreground mb-8 max-w-2xl text-lg lg:text-2xl">
-              Prodfind helps you quickly find the user created web products you
-              need, whether it&apos;s a tool, service, or resource.
-            </p>
-            <div className="flex w-full flex-col justify-center gap-2 sm:flex-row lg:justify-start">
-              <Button asChild className="w-full sm:w-auto">
-                <Link href="/explore">Get Started</Link>
-              </Button>
-              <Button asChild variant="outline" className="w-full sm:w-auto">
-                <Link href="/login">
-                  Login
-                  <ArrowRight className="size-4" />
-                </Link>
-              </Button>
-            </div>
+    <section className="relative w-full overflow-hidden bg-white dark:bg-black">
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,_rgba(0,0,0,0.04),_transparent)] dark:bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.12),_transparent)] bg-[length:2.5rem_2.5rem] [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
+
+      <div className="container relative z-10 flex flex-col items-center justify-center py-20 text-center md:py-32">
+        <div className="mb-8 flex items-center space-x-2 rounded-full bg-muted/70 p-1 pr-4">
+          <div className="flex -space-x-2">
+            <Component className="size-8 rounded-full border-2 border-background bg-blue-500 p-1.5 text-white" />
+            <Database className="size-8 rounded-full border-2 border-background bg-green-500 p-1.5 text-white" />
+            <Circle className="size-8 rounded-full border-2 border-background bg-red-500 p-1.5 text-white" />
           </div>
-          <div className="flex flex-col gap-16 pb-8 pt-12 md:py-32 overflow-hidden mx-auto">
-            <div className="gap-x-22 odd:-translate-x-22 flex">
-              <div className="size-22 border-background bg-background rounded-xl border shadow-xl flex-shrink-0">
-                <div className="bg-muted/20 h-full w-full p-4 rounded-xl">
-                  <Sparkles className="w-full h-full" />
-                </div>
-              </div>
-              <div className="size-22 border-background bg-background rounded-xl border shadow-xl flex-shrink-0">
-                <div className="bg-muted/20 h-full w-full p-4 rounded-xl">
-                  <Bot className="w-full h-full" />
-                </div>
-              </div>
-              <div className="size-22 border-background bg-background rounded-xl border shadow-xl flex-shrink-0">
-                <div className="bg-muted/20 h-full w-full p-4 rounded-xl">
-                  <CircleDollarSign className="w-full h-full" />
-                </div>
-              </div>
-            </div>
-            <div className="gap-x-22 odd:-translate-x-22 flex">
-              <div className="size-22 border-background bg-background rounded-xl border shadow-xl flex-shrink-0">
-                <div className="bg-muted/20 h-full w-full p-4 rounded-xl">
-                  <BadgeCent className="w-full h-full" />
-                </div>
-              </div>
-              <div className="size-22 border-background bg-background rounded-xl border shadow-xl flex-shrink-0">
-                <div className="bg-muted/20 h-full w-full p-4 rounded-xl">
-                  <ShoppingBag className="w-full h-full" />
-                </div>
-              </div>
-              <div className="size-22 border-background bg-background rounded-xl border shadow-xl flex-shrink-0">
-                <div className="bg-muted/20 h-full w-full p-4 rounded-xl">
-                  <UploadCloud className="w-full h-full" />
-                </div>
-              </div>
-            </div>
-            <div className="gap-x-22 odd:-translate-x-22 flex">
-              <div className="size-22 border-background bg-background rounded-xl border shadow-xl flex-shrink-0">
-                <div className="bg-muted/20 h-full w-full p-4 rounded-xl">
-                  <Cog className="w-full h-full" />
-                </div>
-              </div>
-              <div className="size-22 border-background bg-background rounded-xl border shadow-xl flex-shrink-0">
-                <div className="bg-muted/20 h-full w-full p-4 rounded-xl">
-                  <Play className="w-full h-full" />
-                </div>
-              </div>
-              <div className="size-22 border-background bg-background rounded-xl border shadow-xl flex-shrink-0">
-                <div className="bg-muted/20 h-full w-full p-4 rounded-xl">
-                  <Camera className="w-full h-full" />
-                </div>
-              </div>
-            </div>
-          </div>
+          <span className="text-sm font-medium text-foreground/80">50+</span>
+          <span className="text-sm text-foreground/60">
+            Fastest way to find products
+          </span>
+        </div>
+
+        <div className="mb-6 max-w-4xl text-5xl font-bold tracking-tighter text-foreground md:text-7xl">
+          A fastest way to
+          <p className="mb-6 max-w-4xl text-5xl font-bold tracking-tighter text-foreground md:text-7xl bg-gradient-to-r from-primary via-foreground to-primary bg-clip-text text-transparent">
+            find products
+          </p>
+        </div>
+        <p className="mb-10 max-w-2xl text-lg text-foreground/70 md:text-xl">
+          Prodfind helps you quickly find the user created web products you
+          need, whether it&apos;s a tool, service, or resource.
+          <br />
+        </p>
+
+        <p className="mb-10 max-w-2xl text-lg md:text-xl">
+          Let&apos;s find the best products together!
+        </p>
+
+        <Button
+          size="lg"
+          className="h-12 rounded-full px-8 text-lg font-semibold tracking-tight shadow-lg"
+        >
+          Join early access
+        </Button>
+      </div>
+
+      <div className="relative z-10 w-full pb-20 [mask-image:linear-gradient(to_top,white,transparent)]">
+        <div className="container flex flex-wrap items-center justify-center gap-x-12 gap-y-4 md:justify-between">
+          <p className="font-bold text-foreground/80">Prodfind</p>
+          <p className="font-bold text-foreground/80">Prodfind</p>
+          <p className="font-bold text-foreground/80">Prodfind</p>
+          <p className="font-bold text-foreground/80">Prodfind</p>
+          <p className="font-bold text-foreground/80">Prodfind</p>
         </div>
       </div>
     </section>

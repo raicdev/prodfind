@@ -15,6 +15,13 @@
       "when": 1752840071811,
       "tag": "0001_strange_dust",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1753079599597,
+      "tag": "0002_premium_miss_america",
+      "breakpoints": true
     }
   ]
 }

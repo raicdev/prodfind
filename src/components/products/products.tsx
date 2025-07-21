@@ -10,27 +10,47 @@ import { cn } from "@/lib/utils";
 import { trpc } from "@/trpc/client";
 import { useAuth } from "@/context/auth-context";
 
-export function Products({ dashboard }: { dashboard?: boolean }) {
+export function Products({
+  dashboard,
+  forceRefresh,
+  initialProducts,
+}: {
+  dashboard?: boolean;
+  forceRefresh?: string;
+  initialProducts?: ProductsType;
+}) {
   const { session } = useAuth();
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [products, setProducts] = React.useState<ProductsType>([]);
+  const [products, setProducts] = React.useState<ProductsType>(initialProducts || []);
   const [visibleProducts, setVisibleProducts] = React.useState<
     ProductsType | undefined
-  >(products);
+  >(initialProducts || []);
 
-  // Fix: use the trpc.getProducts.useQuery hook directly in the component body, not inside useEffect
-  const { data, isLoading } = trpc.getProducts.useQuery({
-    userId: dashboard ? session?.user?.id : undefined,
-  });
+  const {
+    data,
+    isLoading,
+    refetch,
+  } = trpc.getProducts.useQuery(
+    {
+      userId: dashboard ? session?.user?.id : undefined,
+    },
+    { enabled: !initialProducts }
+  );
 
   useEffect(() => {
-    if (data) {
+    if (forceRefresh) {
+      refetch();
+    }
+  }, [forceRefresh, refetch]);
+
+  useEffect(() => {
+    if (data && !initialProducts) {
       setProducts(data as unknown as ProductsType);
       setVisibleProducts(data as unknown as ProductsType);
     }
-  }, [data, isLoading]);
+  }, [data, initialProducts]);
 
-  if (isLoading) {
+  if (isLoading && !initialProducts) {
     return (
       <div className="flex justify-center items-center h-full">
         <Loader2 className="w-4 h-4 animate-spin" />

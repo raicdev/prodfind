@@ -21,6 +21,8 @@ import { trpc } from "@/trpc/client";
 import { useState } from "react";
 import { CheckCircleIcon, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { UploadDropzone } from "@/lib/uploadthing";
+import Image from "next/image";
 
 const ProductFormSchema = ProductSchema.omit({
   id: true,
@@ -57,11 +59,6 @@ export default function NewProductPage() {
     mode: "onChange",
   });
 
-  const { fields: imageFields, append: appendImage, remove: removeImage } = useFieldArray({
-    name: "images",
-    control: form.control,
-  });
-
   const { fields: linkFields, append: appendLink, remove: removeLink } = useFieldArray({
     name: "links",
     control: form.control,
@@ -92,7 +89,7 @@ export default function NewProductPage() {
   return (
     <div className="max-w-2xl mx-auto p-4 sm:p-6 lg:p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Create a New Product</h1>
+        <h1 className="text-3xl font-semibold">Create a New Product</h1>
         <p className="text-muted-foreground">Fill out the form to add a new product to your store.</p>
       </div>
 
@@ -145,20 +142,34 @@ export default function NewProductPage() {
             )}
           />
           
-          <FormField
-            control={form.control}
-            name="icon"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Icon URL</FormLabel>
-                <FormControl>
-                  <Input placeholder="https://example.com/icon.png" {...field} />
-                </FormControl>
-                 <FormDescription>Optional: A URL for the product&apos;s icon.</FormDescription>
-                <FormMessage />
-              </FormItem>
+          <div>
+            <FormLabel>Icon</FormLabel>
+            <div className="mt-2">
+              <UploadDropzone
+                endpoint="iconUploader"
+                onClientUploadComplete={(res) => {
+                  if (res && res.length > 0) {
+                    form.setValue("icon", res[0].ufsUrl);
+                  }
+                }}
+                onUploadError={(error: Error) => {
+                  alert(`ERROR! ${error.message}`);
+                }}
+              />
+            </div>
+            {form.watch("icon") && (
+              <div className="mt-4">
+                <p className="text-sm font-medium">Icon Preview:</p>
+                <img
+                  src={form.watch("icon")!}
+                  alt="Icon preview"
+                  width={100}
+                  height={100}
+                  className="rounded-md mt-2"
+                />
+              </div>
             )}
-          />
+          </div>
 
           <FormField
             control={form.control}
@@ -184,38 +195,47 @@ export default function NewProductPage() {
           />
 
           <div>
-            <h3 className="text-lg font-medium">Product Images</h3>
-            <div className="space-y-4 mt-2">
-              {imageFields.map((field, index) => (
-                <div key={field.id} className="flex items-center space-x-2">
-                   <FormField
-                    control={form.control}
-                    name={`images.${index}.url`}
-                    render={({ field }) => (
-                      <FormItem className="flex-grow">
-                        <FormControl>
-                          <Input {...field} placeholder="https://example.com/image.png" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+            <h3 className="text-lg font-medium">Product Gallery</h3>
+            <div className="mt-2">
+              <UploadDropzone
+                endpoint="imageUploader"
+                onClientUploadComplete={(res) => {
+                  if (res) {
+                    const currentImages = form.getValues("images") || [];
+                    const newImages = res.map((file) => ({ id: crypto.randomUUID(), url: file.ufsUrl }));
+                    form.setValue("images", [...currentImages, ...newImages]);
+                  }
+                }}
+                onUploadError={(error: Error) => {
+                  alert(`ERROR! ${error.message}`);
+                }}
+              />
+            </div>
+            <div className="mt-4 grid grid-cols-3 gap-4">
+              {form.watch("images")?.map((image, index) => (
+                <div key={image.url} className="relative">
+                  <img
+                    src={image.url}
+                    alt="Product image"
+                    width={150}
+                    height={150}
+                    className="rounded-md object-cover"
                   />
-                  <Button type="button" variant="ghost" size="icon" onClick={() => removeImage(index)}>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-1 right-1 bg-red-500 text-white hover:bg-red-600"
+                    onClick={() => {
+                      const currentImages = form.getValues("images") || [];
+                      form.setValue("images", currentImages.filter((_, i) => i !== index));
+                    }}
+                  >
                     <TrashIcon className="h-4 w-4" />
                   </Button>
                 </div>
               ))}
             </div>
-             <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="mt-2"
-              onClick={() => appendImage({ id: crypto.randomUUID(), url: '' })}
-            >
-              <PlusCircledIcon className="mr-2 h-4 w-4" />
-              Add Image
-            </Button>
           </div>
           
           <div>

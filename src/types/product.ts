@@ -16,21 +16,35 @@ export const ProductImageSchema = z.object({
 });
 
 export const ProductSchema = z.object({
-    id: z.uuid(),
+    id: z.string(),
     authorId: z.string(),
     name: z.string(),
-    description: z.string(),
+    description: z.string().nullable(),
     price: z.string(),
+    images: z.array(ProductImageSchema).nullable(),
+    icon: z.string().nullable(),
+    links: z.array(ProductLinkSchema).nullable(),
+    category: z.array(z.string()).nullable(),
     createdAt: z.date(),
     updatedAt: z.date(),
-    images: z.array(ProductImageSchema),
-    icon: z.string().optional(),
-    category: z.array(z.string()),
-    links: z.array(ProductLinkSchema),
+    recommendationCount: z.number().optional(),
+});
+
+export const ProductWithAuthorSchema = ProductSchema.extend({
+    author: z.object({
+        id: z.string(),
+        name: z.string(),
+        email: z.string(),
+        emailVerified: z.boolean(),
+        image: z.string().optional(),
+        createdAt: z.date(),
+        updatedAt: z.date(),
+    }),
 });
 
 export const ProductsSchema = z.array(ProductSchema);
 
 export type Product = z.infer<typeof ProductSchema>;
 export type ProductLink = z.infer<typeof ProductLinkSchema>;
-export type Products = z.infer<typeof ProductsSchema>;
+export type Products = Product[];
+export type ProductWithAuthor = z.infer<typeof ProductWithAuthorSchema>;

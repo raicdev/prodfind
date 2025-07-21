@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { BellIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -9,57 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
-const initialNotifications = [
-  {
-    id: 1,
-    user: "Chris Tompson",
-    action: "requested review on",
-    target: "PR #42: Feature implementation",
-    timestamp: "15 minutes ago",
-    unread: true,
-  },
-  {
-    id: 2,
-    user: "Emma Davis",
-    action: "shared",
-    target: "New component library",
-    timestamp: "45 minutes ago",
-    unread: true,
-  },
-  {
-    id: 3,
-    user: "James Wilson",
-    action: "assigned you to",
-    target: "API integration task",
-    timestamp: "4 hours ago",
-    unread: false,
-  },
-  {
-    id: 4,
-    user: "Alex Morgan",
-    action: "replied to your comment in",
-    target: "Authentication flow",
-    timestamp: "12 hours ago",
-    unread: false,
-  },
-  {
-    id: 5,
-    user: "Sarah Chen",
-    action: "commented on",
-    target: "Dashboard redesign",
-    timestamp: "2 days ago",
-    unread: false,
-  },
-  {
-    id: 6,
-    user: "Miky Derya",
-    action: "mentioned you in",
-    target: "Origin UI open graph image",
-    timestamp: "2 weeks ago",
-    unread: false,
-  },
-];
+import { trpc } from "@/trpc/client";
 
 function Dot({ className }: { className?: string }) {
   return (
@@ -78,26 +27,29 @@ function Dot({ className }: { className?: string }) {
 }
 
 export default function NotificationMenu() {
-  const [notifications, setNotifications] = useState(initialNotifications);
-  const unreadCount = notifications.filter((n) => n.unread).length;
+  const utils = trpc.useUtils();
+  const { data: notifications, isLoading } = trpc.notifications.get.useQuery();
+
+  const markAsReadMutation = trpc.notifications.markAsRead.useMutation({
+    onSuccess: () => {
+      utils.notifications.get.invalidate();
+    },
+  });
+
+  const markAllAsReadMutation = trpc.notifications.markAllAsRead.useMutation({
+    onSuccess: () => {
+      utils.notifications.get.invalidate();
+    },
+  });
+
+  const unreadCount = notifications?.filter((n) => !n.read).length ?? 0;
 
   const handleMarkAllAsRead = () => {
-    setNotifications(
-      notifications.map((notification) => ({
-        ...notification,
-        unread: false,
-      }))
-    );
+    markAllAsReadMutation.mutate();
   };
 
   const handleNotificationClick = (id: number) => {
-    setNotifications(
-      notifications.map((notification) =>
-        notification.id === id
-          ? { ...notification, unread: false }
-          : notification
-      )
-    );
+    markAsReadMutation.mutate({ id });
   };
 
   return (
@@ -135,7 +87,8 @@ export default function NotificationMenu() {
           aria-orientation="horizontal"
           className="bg-border -mx-1 my-1 h-px"
         ></div>
-        {notifications.map((notification) => (
+        {isLoading && <div className="p-4 text-sm">Loading...</div>}
+        {notifications?.map((notification) => (
           <div
             key={notification.id}
             className="hover:bg-accent rounded-md px-3 py-2 text-sm transition-colors"
@@ -147,19 +100,21 @@ export default function NotificationMenu() {
                   onClick={() => handleNotificationClick(notification.id)}
                 >
                   <span className="text-foreground font-medium hover:underline">
-                    {notification.user}
-                  </span>{" "}
-                  {notification.action}{" "}
+                    {notification.actor?.name || "Someone"}
+                  </span>
+                  {" "}
+                  {notification.action}
+                  {" "}
                   <span className="text-foreground font-medium hover:underline">
-                    {notification.target}
+                    {notification.product?.name || "a product"}
                   </span>
                   .
                 </button>
                 <div className="text-muted-foreground text-xs">
-                  {notification.timestamp}
+                  {new Date(notification.createdAt).toLocaleString()}
                 </div>
               </div>
-              {notification.unread && (
+              {!notification.read && (
                 <div className="absolute end-0 self-center">
                   <span className="sr-only">Unread</span>
                   <Dot />

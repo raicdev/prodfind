@@ -1,48 +1,48 @@
 "use client";
 
-import InfoMenu from "@/components/navbar-components/info-menu"
-import Logo from "@/components/navbar-components/logo"
-import NotificationMenu from "@/components/navbar-components/notification-menu"
-import UserMenu from "@/components/navbar-components/user-menu"
-import { Button } from "@/components/ui/button"
+import InfoMenu from "@/components/navbar-components/info-menu";
+import Logo from "@/components/navbar-components/logo";
+import NotificationMenu from "@/components/navbar-components/notification-menu";
+import UserMenu from "@/components/navbar-components/user-menu";
+import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from "@/components/ui/navigation-menu"
+} from "@/components/ui/navigation-menu";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { useEffect, useState } from "react"
-import { cn } from "@/lib/utils"
-import { usePathname } from "next/navigation"
+} from "@/components/ui/popover";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
   { href: "/", label: "Home" },
-  { href: "/features", label: "Features" }
-]
+  { href: "/features", label: "Features" },
+];
 
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const _pathname = usePathname()
-  const pathname = _pathname ? _pathname : ""
+  const [isScrolled, setIsScrolled] = useState(false);
+  const _pathname = usePathname();
+  const pathname = _pathname ? _pathname : "";
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
+      setIsScrolled(window.scrollY > 10);
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header 
+    <header
       className={cn(
         "border-b px-4 md:px-6 sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-all duration-200",
         isScrolled && "shadow-md"
@@ -91,7 +91,11 @@ export default function Header() {
                 <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
                   {navigationLinks.map((link, index) => (
                     <NavigationMenuItem key={index} className="w-full">
-                      <NavigationMenuLink asChild className="py-1.5" active={pathname === link.href}>
+                      <NavigationMenuLink
+                        asChild
+                        className="py-1.5"
+                        active={pathname === link.href}
+                      >
                         <Link href={link.href}>{link.label}</Link>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
@@ -102,9 +106,9 @@ export default function Header() {
           </Popover>
           {/* Main nav */}
           <div className="flex items-center gap-6">
-            <a href="#" className="text-primary hover:text-primary/90">
-              <Logo />
-            </a>
+            <Link href="/" className="text-xl font-semibold">
+              Prodfind
+            </Link>
             {/* Navigation menu */}
             <NavigationMenu className="max-md:hidden">
               <NavigationMenuList className="gap-2">
@@ -136,7 +140,7 @@ export default function Header() {
         </div>
       </div>
     </header>
-  )
+  );
 }
 
 export { Header };

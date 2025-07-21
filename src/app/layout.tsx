@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes";
 import { TRPCProvider } from "@/trpc/client";
 import { AuthProvider } from "../context/auth-context";
 import { BotIdClient } from "botid/client";
+import { Toaster } from "sonner";
 
 // Define the paths that need bot protection.
 // These are paths that are routed to by your app.
@@ -17,7 +18,7 @@ const protectedRoutes = [
   {
     path: "/api/*",
     method: "*",
-  }
+  },
 ];
 
 const inter = Inter({
@@ -42,15 +43,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-        <head>
-          <BotIdClient protect={protectedRoutes} />
-        </head>
+      <head>
+        <BotIdClient protect={protectedRoutes} />
+      </head>
       <body
         className={`${inter.variable} ${geistMono.variable} font-sans antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <TRPCProvider>
-            <AuthProvider>{children}</AuthProvider>
+            <AuthProvider>
+              {children}
+
+              <Toaster position="top-right" richColors />
+            </AuthProvider>
           </TRPCProvider>
         </ThemeProvider>
       </body>

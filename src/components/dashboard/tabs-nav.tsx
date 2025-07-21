@@ -7,6 +7,12 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const navLinks = [
   { value: "dashboard", label: "Home", href: "/dashboard" },
   { value: "products", label: "Products", href: "/dashboard/products" },
+  { value: "bookmarks", label: "Bookmarks", href: "/dashboard/bookmarks" },
+  {
+    value: "recommendations",
+    label: "Recommendations",
+    href: "/dashboard/recommendations",
+  },
   { value: "explore", label: "Explore", href: "/explore" },
 ];
 
