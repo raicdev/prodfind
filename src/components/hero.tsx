@@ -1,18 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  BrainCircuit,
-  Circle,
-  Component,
-  Database,
-  Feather,
-  GitBranch,
-  Search,
-  Sparkles,
-  Triangle,
-} from "lucide-react";
-import { Badge } from "./ui/badge";
+import { Circle, Component, Database } from "lucide-react";
+import Link from "next/link";
 
 export const Hero = () => {
   return (
@@ -49,10 +39,11 @@ export const Hero = () => {
         </p>
 
         <Button
+          asChild
           size="lg"
           className="h-12 rounded-full px-8 text-lg font-semibold tracking-tight shadow-lg"
         >
-          Join early access
+          <Link href="/dashboard">Join early access</Link>
         </Button>
       </div>
 
