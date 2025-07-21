@@ -19,6 +19,7 @@ import {
 import { checkBotId } from 'botid/server';
 import { sessionRouter } from './session';
 import { notificationsRouter } from './notifications';
+import { TRPCError } from '@trpc/server';
 
 const CreateProductSchema = ProductSchema.omit({
   id: true,
@@ -46,7 +47,7 @@ export const appRouter = createTRPCRouter({
       const verification = await checkBotId();
 
       if (verification.isBot) {
-        throw new Error("Unauthorized");
+        throw new TRPCError({ code: "UNAUTHORIZED" })
       }
 
       const recommendationCounts = db
@@ -92,7 +93,7 @@ export const appRouter = createTRPCRouter({
     const verification = await checkBotId();
 
     if (verification.isBot) {
-      throw new Error("Unauthorized");
+      throw new TRPCError({ code: "UNAUTHORIZED" })
     }
     const product = await db.insert(productsTable).values({
       ...input,
@@ -112,7 +113,7 @@ export const appRouter = createTRPCRouter({
     const verification = await checkBotId();
 
     if (verification.isBot) {
-      throw new Error("Unauthorized");
+      throw new TRPCError({ code: "UNAUTHORIZED" })
     }
 
     const product = await db.select()
@@ -160,7 +161,7 @@ export const appRouter = createTRPCRouter({
       const verification = await checkBotId();
 
       if (verification.isBot) {
-        throw new Error("Unauthorized");
+        throw new TRPCError({ code: "UNAUTHORIZED" })
       }
 
       if (!ctx.session?.user?.id) {
@@ -198,7 +199,7 @@ export const appRouter = createTRPCRouter({
     .input(z.object({ productId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session?.user?.id) {
-        throw new Error("Unauthorized");
+        throw new TRPCError({ code: "UNAUTHORIZED" })
       }
 
       const product = await db
@@ -212,7 +213,7 @@ export const appRouter = createTRPCRouter({
       }
 
       if (product[0].authorId !== ctx.session.user.id) {
-        throw new Error("Unauthorized");
+        throw new TRPCError({ code: "UNAUTHORIZED" })
       }
 
       await db.delete(productsTable).where(eq(productsTable.id, input.productId));
@@ -224,7 +225,7 @@ export const appRouter = createTRPCRouter({
     .input(z.object({ productId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session?.user?.id) {
-        throw new Error("Unauthorized");
+        throw new TRPCError({ code: "UNAUTHORIZED" })
       }
       await db.insert(bookmarksTable).values({
         id: crypto.randomUUID(),
@@ -258,7 +259,7 @@ export const appRouter = createTRPCRouter({
     .input(z.object({ productId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session?.user?.id) {
-        throw new Error("Unauthorized");
+        throw new TRPCError({ code: "UNAUTHORIZED" })
       }
       await db
         .delete(bookmarksTable)
@@ -294,7 +295,7 @@ export const appRouter = createTRPCRouter({
     .input(z.object({ productId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session?.user?.id) {
-        throw new Error("Unauthorized");
+        throw new TRPCError({ code: "UNAUTHORIZED" })
       }
       await db.insert(recommendationsTable).values({
         id: crypto.randomUUID(),
@@ -328,7 +329,7 @@ export const appRouter = createTRPCRouter({
     .input(z.object({ productId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session?.user?.id) {
-        throw new Error("Unauthorized");
+        throw new TRPCError({ code: "UNAUTHORIZED" })
       }
       await db
         .delete(recommendationsTable)
@@ -362,7 +363,7 @@ export const appRouter = createTRPCRouter({
 
   getBookmarkedProducts: baseProcedure.query(async ({ ctx }) => {
     if (!ctx.session?.user?.id) {
-      throw new Error("Unauthorized");
+      throw new TRPCError({ code: "UNAUTHORIZED" })
     }
 
     const bookmarked = await db
@@ -378,7 +379,7 @@ export const appRouter = createTRPCRouter({
 
   getRecommendedProducts: baseProcedure.query(async ({ ctx }) => {
     if (!ctx.session?.user?.id) {
-      throw new Error("Unauthorized");
+      throw new TRPCError({ code: "UNAUTHORIZED" })
     }
 
     const recommended = await db

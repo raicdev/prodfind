@@ -1,16 +1,15 @@
 import {
   pgTable,
-  serial,
   text,
   timestamp,
   boolean,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import { users } from "./auth";
 import { products } from "./products";
 
 export const notifications = pgTable("notifications", {
-  id: serial("id").primaryKey(),
+  id: text("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: text("user_id").notNull(),
   action: text("action").notNull(),
   target: text("target").notNull(),

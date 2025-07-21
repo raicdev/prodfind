@@ -32,7 +32,7 @@ export const ProductSchema = z.object({
 
 export const ProductWithAuthorSchema = ProductSchema.extend({
     author: z.object({
-        id: z.string(),
+        id: z.uuid(),
         name: z.string(),
         email: z.string(),
         emailVerified: z.boolean(),

@@ -1,10 +1,10 @@
 import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { users } from "./auth";
 import { products } from "./products";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 
 export const bookmarks = pgTable("bookmarks", {
-    id: text('id').primaryKey(),
+    id: text('id').primaryKey().default(sql`gen_random_uuid()`),
     userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     productId: text('product_id').notNull().references(() => products.id, { onDelete: 'cascade' }),
     createdAt: timestamp('created_at').notNull().defaultNow(),

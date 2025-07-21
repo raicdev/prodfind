@@ -32,7 +32,7 @@ export const notificationsRouter = createTRPCRouter({
   }),
 
   markAsRead: authedProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: z.uuid() }))
     .mutation(async ({ ctx, input }) => {
       await db
         .update(notifications)
