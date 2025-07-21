@@ -22,18 +22,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
-import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { addPasswordAction } from "../actions/add-password-action";
 import { trpc } from "@/trpc/client";
 
-const formSchema = z.object({
-  password: z.string().min(8, "Password must be at least 8 characters."),
-  confirmPassword: z.string().min(8, "Password must be at least 8 characters."),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-});
+const formSchema = z
+  .object({
+    password: z.string().min(8, "Password must be at least 8 characters."),
+    confirmPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters."),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 type Props = {
   open: boolean;
@@ -80,7 +82,8 @@ export function AddPasswordDialog({ open, onOpenChange }: Props) {
             <DialogHeader>
               <DialogTitle>Add password</DialogTitle>
               <DialogDescription>
-                Create a password for your account. You&apos;ll be able to use this to sign in.
+                Create a password for your account. You&apos;ll be able to use
+                this to sign in.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
