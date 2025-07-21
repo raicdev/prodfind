@@ -22,7 +22,6 @@ import { useState } from "react";
 import { CheckCircleIcon, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { UploadDropzone } from "@/lib/uploadthing";
-import Image from "next/image";
 
 const ProductFormSchema = ProductSchema.omit({
   id: true,

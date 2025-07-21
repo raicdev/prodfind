@@ -1,20 +1,9 @@
-"use client";
-
 import { Products } from "@/components/products/products";
-import { trpc } from "@/trpc/client";
-import { Loader2 } from "lucide-react";
+import { trpc } from "@/trpc/server";
+import { Products as ProductsType } from "@/types/product";
 
-export default function RecommendationsPage() {
-  const { data: recommendedProducts, isLoading } =
-    trpc.getRecommendedProducts.useQuery();
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <Loader2 className="w-4 h-4 animate-spin" />
-      </div>
-    );
-  }
+export default async function RecommendationsPage() {
+  const recommendedProducts = await trpc.getRecommendedProducts() as ProductsType;
 
   return (
     <div className="py-4">
@@ -25,7 +14,7 @@ export default function RecommendationsPage() {
         </p>
       </div>
 
-      {recommendedProducts && <Products initialProducts={recommendedProducts as any} />}
+      <Products initialProducts={recommendedProducts} />
     </div>
   );
-} 
+}

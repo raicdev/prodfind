@@ -19,7 +19,11 @@ const navLinks = [
   { value: "admin", label: "Admin", href: "/admin", isAdmin: true },
 ];
 
-export default function TabsNav({ session }: { session: Awaited<ReturnType<typeof auth.api.getSession>> }) {
+export default function TabsNav({
+  session,
+}: {
+  session: Awaited<ReturnType<typeof auth.api.getSession>>;
+}) {
   const pathname = usePathname();
 
   const getCurrentTab = () => {
@@ -34,11 +38,8 @@ export default function TabsNav({ session }: { session: Awaited<ReturnType<typeo
           {navLinks
             .filter((link) => !link.isAdmin || session?.user.role === "admin")
             .map((link) => (
-              <TabsTrigger value={link.value} key={link.value} className="flex items-center gap-2">
+              <TabsTrigger value={link.value} key={link.value} asChild>
                 <Link href={link.href}>{link.label}</Link>
-                {link.isAdmin && (
-                  <Badge variant="outline">Admin</Badge>
-                )}
               </TabsTrigger>
             ))}
         </TabsList>

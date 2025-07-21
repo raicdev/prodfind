@@ -1,13 +1,17 @@
 import { Suspense } from "react"
 import { Products } from "@/components/products/products"
 import { Skeleton } from "@/components/ui/skeleton"
+import { trpc } from "@/trpc/server";
+import { Products as ProductsType } from "@/types/product";
 
 export const metadata = {
   title: "Explore Products",
   description: "Discover and explore the latest products",
 }
 
-export default function ExplorePage() {
+export default async function ExplorePage() {
+  const products = await trpc.getProducts({}) as ProductsType;
+
   return (
     <div className="py-4">
       <div className="mb-8">
@@ -28,7 +32,7 @@ export default function ExplorePage() {
           ))}
         </div>
       }>
-        <Products />
+        <Products initialProducts={products} />
       </Suspense>
     </div>
   )

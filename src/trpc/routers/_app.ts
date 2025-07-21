@@ -12,7 +12,6 @@ import {
 import {
   ProductSchema,
   ProductWithAuthor,
-  Products,
   ProductLinkSchema,
   ProductImageSchema,
 } from '@/types/product';
@@ -27,6 +26,15 @@ const CreateProductSchema = ProductSchema.omit({
   createdAt: true,
   updatedAt: true,
 });
+
+const recommendationCountsSubquery = db
+  .select({
+    productId: recommendationsTable.productId,
+    count: sql<number>`count(${recommendationsTable.id})`.mapWith(Number).as("count"),
+  })
+  .from(recommendationsTable)
+  .groupBy(recommendationsTable.productId)
+  .as("recommendationCounts");
 
 /**
  * Api Router definition
@@ -43,33 +51,16 @@ export const appRouter = createTRPCRouter({
         userId: z.string().optional(),
       })
     )
-    .query(async ({ ctx, input }) => {
-      const verification = await checkBotId();
-
-      if (verification.isBot) {
-        throw new TRPCError({ code: "UNAUTHORIZED" })
-      }
-
-      const recommendationCounts = db
-        .select({
-          productId: recommendationsTable.productId,
-          count: sql<number>`count(${recommendationsTable.id})`
-            .mapWith(Number)
-            .as("count"),
-        })
-        .from(recommendationsTable)
-        .groupBy(recommendationsTable.productId)
-        .as("recommendationCounts");
-
+    .query(async ({ input }) => {
       let qb = db
         .select({
           ...getTableColumns(productsTable),
-          recommendationCount: recommendationCounts.count,
+          recommendationCount: recommendationCountsSubquery.count,
         })
         .from(productsTable)
         .leftJoin(
-          recommendationCounts,
-          eq(productsTable.id, recommendationCounts.productId)
+          recommendationCountsSubquery,
+          eq(productsTable.id, recommendationCountsSubquery.productId)
         )
         .$dynamic();
 
@@ -77,9 +68,7 @@ export const appRouter = createTRPCRouter({
         qb = qb.where(eq(productsTable.authorId, input.userId));
       }
 
-      const products = await qb.orderBy(
-        desc(recommendationCounts.count)
-      );
+      const products = await qb.orderBy(desc(recommendationCountsSubquery.count));
 
       return products.map((p) => ({
         ...p,
@@ -360,37 +349,57 @@ export const appRouter = createTRPCRouter({
 
   getBookmarkedProducts: baseProcedure.query(async ({ ctx }) => {
     if (!ctx.session?.user?.id) {
-      throw new TRPCError({ code: "UNAUTHORIZED" })
+      throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 
     const bookmarked = await db
-      .select({ product: productsTable })
+      .select({
+        product: productsTable,
+        recommendationCount: recommendationCountsSubquery.count,
+      })
       .from(bookmarksTable)
       .leftJoin(productsTable, eq(bookmarksTable.productId, productsTable.id))
+      .leftJoin(
+        recommendationCountsSubquery,
+        eq(productsTable.id, recommendationCountsSubquery.productId)
+      )
       .where(eq(bookmarksTable.userId, ctx.session.user.id));
 
     return bookmarked
-      .map((item) => item.product)
-      .filter(Boolean) as Products;
+      .filter((item) => item.product)
+      .map((item) => ({
+        ...item.product!,
+        recommendationCount: item.recommendationCount || 0,
+      }));
   }),
 
   getRecommendedProducts: baseProcedure.query(async ({ ctx }) => {
     if (!ctx.session?.user?.id) {
-      throw new TRPCError({ code: "UNAUTHORIZED" })
+      throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 
     const recommended = await db
-      .select({ product: productsTable })
+      .select({
+        product: productsTable,
+        recommendationCount: recommendationCountsSubquery.count,
+      })
       .from(recommendationsTable)
       .leftJoin(
         productsTable,
         eq(recommendationsTable.productId, productsTable.id)
       )
+      .leftJoin(
+        recommendationCountsSubquery,
+        eq(productsTable.id, recommendationCountsSubquery.productId)
+      )
       .where(eq(recommendationsTable.userId, ctx.session.user.id));
 
     return recommended
-      .map((item) => item.product)
-      .filter(Boolean) as Products;
+      .filter((item) => item.product)
+      .map((item) => ({
+        ...item.product!,
+        recommendationCount: item.recommendationCount || 0,
+      }));
   }),
 });
 
