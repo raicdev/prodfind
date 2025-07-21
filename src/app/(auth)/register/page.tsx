@@ -8,9 +8,13 @@ import { Loader2, UserPlusIcon } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import { SiGithub, SiGoogle } from "@icons-pack/react-simple-icons";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const { signUp, signIn, auth, error: authError, isPending } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState("");
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState<string | null>(null);
@@ -25,16 +29,25 @@ export default function RegisterPage() {
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
+    setIsLoading(true);
     e.preventDefault();
     setError(null);
     try {
-      await signUp.email({
+      const { error } = await signUp.email({
         name: name,
         email: form.email,
         password: form.password,
       });
+      if (error) {
+        throw new Error(error.message);
+      }
+      toast.success("Registration successful", {
+        description: "Please check your email for complete registration",
+      });
     } catch (err: any) {
       setError(err?.message || "Registration failed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -104,9 +117,9 @@ export default function RegisterPage() {
             <Button
               type="submit"
               className="w-full flex items-center gap-2"
-              disabled={isPending}
+              disabled={isLoading}
             >
-              {isPending ? (
+              {isLoading ? (
                 <>
                   <Loader2 className="animate-spin" size={18} />
                   Creating account...

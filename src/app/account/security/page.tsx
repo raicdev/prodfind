@@ -1,12 +1,5 @@
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ChangePassword } from "./_components/change-password";
+import { ChangePassword } from "@/components/account/security/change-password";
+import { TwoFactorAuth } from "@/components/account/security/two-factor-auth";
 
 export default function SecurityPage() {
   return (
@@ -18,6 +11,7 @@ export default function SecurityPage() {
         </p>
       </div>
       <ChangePassword />
+      <TwoFactorAuth />
     </div>
   );
 } 

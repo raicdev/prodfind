@@ -1,6 +1,5 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { usePathname } from "next/navigation";
@@ -50,7 +49,7 @@ export default function AccountLayout({
       <div className="grid md:grid-cols-[0.4fr_1fr] gap-8 p-4 mt-10 md:p-8 pb-24 md:pb-8">
         <aside className="hidden md:flex flex-col gap-2">
           <h1 className="text-2xl xl:text-3xl font-medium tracking-tight break-words">
-            <span>Welcome, {session.user.name}.</span>
+            <span>Welcome, {session.user.name ? session.user.name : "Anonymous"}.</span>
             <br />
             <span className="text-muted-foreground">
               Manage your Prodfind account.

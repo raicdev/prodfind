@@ -1,12 +1,4 @@
-
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-  } from "@/components/ui/card";
-import { DeleteAccount } from "./_components/delete-account";
+import { DeleteAccount } from "@/components/account/data/delete-account";
   
   export default function DataPage() {
     return (

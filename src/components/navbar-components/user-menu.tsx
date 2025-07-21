@@ -81,14 +81,14 @@ export default function UserMenu() {
               src={session.user.image ?? undefined}
               alt="Profile image"
             />
-            <AvatarFallback>{session.user.name?.charAt(0)}</AvatarFallback>
+            <AvatarFallback>{session.user.name ? session.user.name.charAt(0) : "A"}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="max-w-64" align="end">
         <DropdownMenuLabel className="flex min-w-0 flex-col">
           <span className="text-foreground truncate text-sm font-medium">
-            {session.user.name}
+            {session.user.name ? session.user.name : "Anonymous"}
           </span>
           <span className="text-muted-foreground truncate text-xs font-normal">
             {session.user.email}

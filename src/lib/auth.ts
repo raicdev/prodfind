@@ -3,6 +3,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { passkey } from "better-auth/plugins/passkey"
 import { oneTap } from "better-auth/plugins";
 import { twoFactor } from "better-auth/plugins/two-factor";
+import { admin as adminPlugin } from "better-auth/plugins";
 
 import { db } from "./db";
 import { sendEmail } from "./email";
@@ -13,7 +14,7 @@ export const auth = betterAuth({
         provider: "pg",
         usePlural: true,
     }),
-    plugins: [passkey(), oneTap(), twoFactor(), twoFactor()],
+    plugins: [passkey(), oneTap(), twoFactor(), adminPlugin()],
     emailVerification: {
         sendVerificationEmail: async ({ user, token, url }) => {
             await sendEmail({

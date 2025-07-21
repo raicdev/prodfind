@@ -21,20 +21,26 @@ import {
 } from "@/components/ui/card";
 import { useAuth } from "@/context/auth-context";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 export function DeleteAccount() {
   const { auth } = useAuth();
   const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
 
   async function handleDelete() {
     setIsPending(true);
     try {
-      await auth.deleteUser({});
-      toast.success("Account deleted successfully");
-      // This will trigger a session update and the user will be redirected
-      // by the AuthGuard or similar mechanism.
+      const { error } = await auth.deleteUser({});
+      if (error) {
+        throw new Error(error.message);
+      }
+      toast.success("Account deleted successfully", {
+        description: "Thank you for using Prodfind!",
+      });
+      router.push("/");
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -43,7 +49,7 @@ export function DeleteAccount() {
   }
 
   return (
-    <Card>
+    <Card className="!gap-4">
       <CardHeader>
         <CardTitle>Delete Account</CardTitle>
         <CardDescription>
@@ -51,7 +57,7 @@ export function DeleteAccount() {
           is not reversible, so please continue with caution.
         </CardDescription>
       </CardHeader>
-      <CardFooter className="border-t bg-destructive/20 p-4">
+      <CardFooter>
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button variant="destructive" disabled={isPending}>

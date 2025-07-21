@@ -5,11 +5,11 @@ import { auth } from "@/lib/auth";
 import { headers as getHeaders } from "next/headers";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { EditNameDialog } from "./components/EditNameDialog";
-import { UpdateEmailDialog } from "./components/UpdateEmailDialog";
-import { SignInMethods } from "./components/SignInMethods";
+import { EditNameDialog } from "@/components/account/general/EditNameDialog";
+import { UpdateEmailDialog } from "@/components/account/general/UpdateEmailDialog";
+import { SignInMethods } from "@/components/account/general/SignInMethods";
 import { Metadata } from "next";
-import { UpdateAvatarDialog } from "./components/UpdateAvatarDialog";
+import { UpdateAvatarDialog } from "@/components/account/general/UpdateAvatarDialog";
 
 export const metadata: Metadata = {
   title: "Account - Prodfind",
@@ -56,7 +56,7 @@ export default async function AccountPage() {
                 alt={session.user.name ?? ""}
               />
               <AvatarFallback>
-                {session.user.name?.[0].toUpperCase()}
+                {session.user.name?.toUpperCase() ?? "A"}
               </AvatarFallback>
             </Avatar>
           </UpdateAvatarDialog>
@@ -70,10 +70,10 @@ export default async function AccountPage() {
                 <p className="text-sm font-medium text-muted-foreground">
                   Full name
                 </p>
-                <p>{user.name}</p>
+                <p>{user.name ? user.name : "Anonymous"}</p>
               </div>
               <EditNameDialog
-                currentName={user.name}
+                currentName={user.name ? user.name : "Anonymous"}
               />
             </div>
             <Separator />
