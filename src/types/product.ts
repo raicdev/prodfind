@@ -46,5 +46,5 @@ export const ProductsSchema = z.array(ProductSchema);
 
 export type Product = z.infer<typeof ProductSchema>;
 export type ProductLink = z.infer<typeof ProductLinkSchema>;
-export type Products = Product[];
+export type Products = z.infer<typeof ProductsSchema>;
 export type ProductWithAuthor = z.infer<typeof ProductWithAuthorSchema>;

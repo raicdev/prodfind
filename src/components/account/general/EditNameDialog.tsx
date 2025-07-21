@@ -47,7 +47,12 @@ export function EditNameDialog({ currentName }: Props) {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsOpen(false);
-    await editNameAction(values.name);
+    const result = await editNameAction(values.name);
+    if (result?.success) {
+      toast.success("Name updated successfully");
+    } else {
+      toast.error("Failed to update name", { description: result?.error });
+    }
   };
 
   return (

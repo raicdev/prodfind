@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { baseProcedure, createTRPCRouter } from '@/trpc/init'
 import { db } from '@/lib/db';
-import { eq, sql, desc, getTableColumns } from 'drizzle-orm';
+import { eq, sql, desc, getTableColumns, and } from 'drizzle-orm';
 import {
   products as productsTable,
   users as usersTable,
@@ -69,7 +69,8 @@ export const appRouter = createTRPCRouter({
         .leftJoin(
           recommendationCounts,
           eq(productsTable.id, recommendationCounts.productId)
-        ) as any; // TODO: fix this
+        )
+        .$dynamic();
 
       if (input.userId) {
         qb = qb.where(eq(productsTable.authorId, input.userId));
@@ -262,8 +263,10 @@ export const appRouter = createTRPCRouter({
       await db
         .delete(bookmarksTable)
         .where(
-          eq(bookmarksTable.productId, input.productId) &&
+          and(
+            eq(bookmarksTable.productId, input.productId),
             eq(bookmarksTable.userId, ctx.session.user.id)
+          )
         );
       return { success: true };
     }),
@@ -278,8 +281,10 @@ export const appRouter = createTRPCRouter({
         .select()
         .from(bookmarksTable)
         .where(
-          eq(bookmarksTable.productId, input.productId) &&
+          and(
+            eq(bookmarksTable.productId, input.productId),
             eq(bookmarksTable.userId, ctx.session.user.id)
+          )
         )
         .limit(1);
       return { isBookmarked: !!bookmark[0] };
@@ -328,8 +333,10 @@ export const appRouter = createTRPCRouter({
       await db
         .delete(recommendationsTable)
         .where(
-          eq(recommendationsTable.productId, input.productId) &&
+          and(
+            eq(recommendationsTable.productId, input.productId),
             eq(recommendationsTable.userId, ctx.session.user.id)
+          )
         );
       return { success: true };
     }),
@@ -344,8 +351,10 @@ export const appRouter = createTRPCRouter({
         .select()
         .from(recommendationsTable)
         .where(
-          eq(recommendationsTable.productId, input.productId) &&
+          and(
+            eq(recommendationsTable.productId, input.productId),
             eq(recommendationsTable.userId, ctx.session.user.id)
+          )
         )
         .limit(1);
       return { isRecommended: !!recommendation[0] };
