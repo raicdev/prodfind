@@ -6,6 +6,8 @@ import { TRPCProvider } from "@/trpc/client";
 import { AuthProvider } from "../context/auth-context";
 import { BotIdClient } from "botid/client";
 import { Toaster } from "sonner";
+import { Suspense } from "react";
+import { Loader2 } from "lucide-react";
 
 // Define the paths that need bot protection.
 // These are paths that are routed to by your app.
@@ -52,8 +54,15 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <TRPCProvider>
             <AuthProvider>
-              {children}
-
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center h-screen">
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  </div>
+                }
+              >
+                {children}
+              </Suspense>
               <Toaster position="top-right" richColors />
             </AuthProvider>
           </TRPCProvider>
