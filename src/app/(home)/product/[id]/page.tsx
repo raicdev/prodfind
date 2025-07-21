@@ -195,7 +195,7 @@ export default function ProductDetailPage() {
         if (res) {
           const newImages = res.map((file) => ({
             id: crypto.randomUUID(),
-            url: file.url,
+            url: file.ufsUrl,
           }));
           setEditForm((prev) => ({
             ...prev,
@@ -229,7 +229,7 @@ export default function ProductDetailPage() {
   const deleteProductMutation = trpc.deleteProduct.useMutation({
     onSuccess: () => {
       toast.success("Product deleted successfully");
-      router.push("/?forceRefresh=true");
+      router.push("/");
     },
     onError: (error: any) => {
       toast.error(error.message || "Failed to delete product");

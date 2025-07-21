@@ -2,11 +2,12 @@ import { Products } from "@/components/products/products";
 import { auth } from "@/lib/auth";
 import { trpc } from "@/trpc/server";
 import { headers as getHeaders } from "next/headers";
+import { Products as ProductsType } from "@/types/product";
 
 export default async function ProductsPage() {
   const headers = await getHeaders();
   const session = await auth.api.getSession({ headers });
-  const products = await trpc.getProducts({ userId: session?.user.id });
+  const products = await trpc.getProducts({ userId: session?.user.id }) as ProductsType;
 
   return (
     <div className="py-4">

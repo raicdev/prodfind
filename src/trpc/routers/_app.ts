@@ -81,10 +81,10 @@ export const appRouter = createTRPCRouter({
         desc(recommendationCounts.count)
       );
 
-      return products.map((p: any) => ({
+      return products.map((p) => ({
         ...p,
         recommendationCount: p.recommendationCount || 0,
-      })) as Products;
+      }));
     }),
   /**
    * Create product
@@ -97,7 +97,6 @@ export const appRouter = createTRPCRouter({
     }
     const product = await db.insert(productsTable).values({
       ...input,
-      id: crypto.randomUUID(),
       authorId: ctx.session?.user?.id ?? "unknown",
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -228,7 +227,6 @@ export const appRouter = createTRPCRouter({
         throw new TRPCError({ code: "UNAUTHORIZED" })
       }
       await db.insert(bookmarksTable).values({
-        id: crypto.randomUUID(),
         productId: input.productId,
         userId: ctx.session.user.id,
         createdAt: new Date(),
@@ -298,7 +296,6 @@ export const appRouter = createTRPCRouter({
         throw new TRPCError({ code: "UNAUTHORIZED" })
       }
       await db.insert(recommendationsTable).values({
-        id: crypto.randomUUID(),
         productId: input.productId,
         userId: ctx.session.user.id,
         createdAt: new Date(),

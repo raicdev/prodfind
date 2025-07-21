@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const ProductLinkSchema = z.object({
-    id: z.string(),
+    id: z.uuid(),
     url: z.url(),
     title: z.string(),
     description: z.string().optional(),
@@ -9,14 +9,14 @@ export const ProductLinkSchema = z.object({
 });
 
 export const ProductImageSchema = z.object({
-    id: z.string(),
+    id: z.uuid(),
     url: z.url(),
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
 });
 
 export const ProductSchema = z.object({
-    id: z.string(),
+    id: z.uuid(),
     authorId: z.string(),
     name: z.string(),
     description: z.string().nullable(),
