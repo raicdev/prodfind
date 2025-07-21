@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1752827038761,
-      "tag": "0000_neat_gorgon",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1752840071811,
-      "tag": "0001_strange_dust",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1753079599597,
-      "tag": "0002_premium_miss_america",
+      "when": 1753079777370,
+      "tag": "0000_complete_omega_flight",
       "breakpoints": true
     }
   ]
