@@ -1,17 +1,14 @@
-"use client";
-
 import { Hero } from "@/components/hero";
 import { Products } from "@/components/products/products";
-import { useSearchParams } from "next/navigation";
+import { trpc } from "@/trpc/server";
 
-export default function Home() {
-  const searchParams = useSearchParams();
-  const forceRefresh = searchParams.get("forceRefresh");
+export default async function Home() {
+  const products = await trpc.getProducts({});
 
   return (
     <>
       <Hero />
-      <Products forceRefresh={forceRefresh || undefined} />
+      <Products initialProducts={products} />
     </>
   );
 }

@@ -7,7 +7,7 @@ import { makeQueryClient } from './query-client'
 import { appRouter } from '@/trpc/routers/_app'
 
 export const getQueryClient = cache(makeQueryClient)
-const caller = createCallerFactory(appRouter)(createTRPCContext)
+export const caller = createCallerFactory(appRouter)(createTRPCContext)
 
 /**
  * Server-Side 向けの tRPC client.
