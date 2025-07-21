@@ -1,8 +1,13 @@
-"use client";
-
 import { Products } from "@/components/products/products";
+import { auth } from "@/lib/auth";
+import { trpc } from "@/trpc/server";
+import { headers as getHeaders } from "next/headers";
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const headers = await getHeaders();
+  const session = await auth.api.getSession({ headers });
+  const products = await trpc.getProducts({ userId: session?.user.id });
+
   return (
     <div className="py-4">
       <div className="mb-8">
@@ -12,7 +17,7 @@ export default function ProductsPage() {
         </p>
       </div>
 
-      <Products dashboard />
+      <Products initialProducts={products} />
     </div>
   );
 }

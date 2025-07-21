@@ -48,7 +48,7 @@ export default function NotificationMenu() {
     markAllAsReadMutation.mutate();
   };
 
-  const handleNotificationClick = (id: number) => {
+  const handleNotificationClick = (id: string) => {
     markAsReadMutation.mutate({ id });
   };
 
