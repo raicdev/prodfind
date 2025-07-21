@@ -18,6 +18,10 @@ import { Loader2 } from "lucide-react";
 
 const protectedRoutes = [
   {
+    path: "/",
+    method: "*",
+  },
+  {
     path: "/api/*",
     method: "*",
   },
