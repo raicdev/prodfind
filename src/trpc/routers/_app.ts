@@ -19,6 +19,7 @@ import { checkBotId } from 'botid/server';
 import { sessionRouter } from './session';
 import { notificationsRouter } from './notifications';
 import { TRPCError } from '@trpc/server';
+import { usersRouter } from './users';
 
 const CreateProductSchema = ProductSchema.omit({
   id: true,
@@ -40,6 +41,7 @@ const recommendationCountsSubquery = db
  * Api Router definition
  */
 export const appRouter = createTRPCRouter({
+  users: usersRouter,
   session: sessionRouter,
   notifications: notificationsRouter,
   /**

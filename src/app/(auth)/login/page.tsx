@@ -10,11 +10,13 @@ import { SiGithub, SiGoogle } from "@icons-pack/react-simple-icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { TwoFactorDialog } from "@/components/ui/two-factor-dialog";
 
 export default function LoginPage() {
   const router = useRouter();
   const { signIn, auth, error: authError, isPending } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [showTwoFactorDialog, setShowTwoFactorDialog] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState<string | null>(null);
 
@@ -32,22 +34,50 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
     try {
-      const { error } = await signIn.email({
-        email: form.email,
-        password: form.password,
-      });
+      const { error } = await signIn.email(
+        {
+          email: form.email,
+          password: form.password,
+        },
+        {
+          async onSuccess(data) {
+            if (data.data?.twoFactorRedirect) {
+              setShowTwoFactorDialog(true);
+              return;
+            }
+
+            toast.success("Login successful", {
+              description: "Welcome back!",
+            });
+            router.push("/dashboard");
+          },
+        }
+      );
+
       if (error) {
         throw new Error(error.message);
       }
-      toast.success("Login successful", {
-        description: "Welcome back!",
-      });
-      router.push("/dashboard");
     } catch (err: any) {
       setError(err?.message || "Login failed");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleTwoFactorSubmit = async (code: string) => {
+    const { error } = await signIn.twoFactor.verifyTotp({
+      code,
+      trustDevice: true,
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    toast.success("Login successful", {
+      description: "Welcome back!",
+    });
+    router.push("/dashboard");
   };
 
   const handleSocialLogin = async (provider: string) => {
@@ -158,6 +188,11 @@ export default function LoginPage() {
           </div>
         </CardContent>
       </Card>
+      <TwoFactorDialog
+        open={showTwoFactorDialog}
+        onOpenChange={setShowTwoFactorDialog}
+        onSubmit={handleTwoFactorSubmit}
+      />
     </div>
   );
 }

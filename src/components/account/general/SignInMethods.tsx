@@ -9,8 +9,9 @@ import { authClient } from "@/lib/auth-client";
 import { users, accounts } from "@/lib/db/schema/auth";
 import type { InferSelectModel } from "drizzle-orm";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { toast } from "sonner";
+import { AddPasswordDialog } from "./add-password-dialog";
 
 type User = InferSelectModel<typeof users> & {
   accounts: InferSelectModel<typeof accounts>[];
@@ -23,9 +24,10 @@ type Props = {
 export function SignInMethods({ user }: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [showAddPasswordDialog, setShowAddPasswordDialog] = useState(false);
 
   const emailProvider = user.accounts?.find(
-    (a) => a.providerId === "emailAndPassword"
+    (a) => a.providerId === "credential"
   );
   const googleProvider = user.accounts?.find((a) => a.providerId === "google");
   const githubProvider = user.accounts?.find((a) => a.providerId === "github");
@@ -49,7 +51,7 @@ export function SignInMethods({ user }: Props) {
     });
   };
 
-  const handleDisconnect = (providerId: "google" | "github") => {
+  const handleDisconnect = (providerId: "google" | "github" | "credential") => {
     startTransition(async () => {
       const { error } = await authClient.unlinkAccount({
         providerId,
@@ -81,16 +83,27 @@ export function SignInMethods({ user }: Props) {
               <div>
                 <p className="font-medium">Email and password</p>
                 <p className="text-sm text-muted-foreground">
-                  {emailProvider ? emailProvider.accountId : "Not set up"}
+                  {emailProvider ? "Set up completed" : "Not set up"}
                 </p>
               </div>
             </div>
-            <Button
-              variant="outline"
-              disabled
-            >
-              Not changeable
-            </Button>
+            {emailProvider ? (
+              <Button
+                variant="outline"
+                onClick={() => handleDisconnect("credential")}
+                disabled={isPending || user.accounts.length === 1}
+              >
+                {isPending ? "Disconnecting..." : "Disable"}
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                onClick={() => setShowAddPasswordDialog(true)}
+                disabled={isPending}
+              >
+                {isPending ? "Connecting..." : "Connect"}
+              </Button>
+            )}
           </div>
           <Separator />
           <div className="flex items-center justify-between">
@@ -168,6 +181,10 @@ export function SignInMethods({ user }: Props) {
           </div>
         </CardContent>
       </Card>
+      <AddPasswordDialog
+        open={showAddPasswordDialog}
+        onOpenChange={setShowAddPasswordDialog}
+      />
     </>
   );
 }
