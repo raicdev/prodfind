@@ -12,6 +12,7 @@ export const products = pgTable("products", {
     icon: text('icon'),
     links: jsonb('links'),
     category: jsonb('category').array(),
+    license: text('license'),
     createdAt: timestamp('created_at').notNull(),
     updatedAt: timestamp('updated_at').notNull()
 });

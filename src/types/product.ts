@@ -25,6 +25,7 @@ export const ProductSchema = z.object({
     icon: z.string().nullable(),
     links: z.array(ProductLinkSchema).nullable(),
     category: z.array(z.string()).nullable(),
+    license: z.string().optional().nullable(),
     createdAt: z.date(),
     updatedAt: z.date(),
     recommendationCount: z.number().optional(),

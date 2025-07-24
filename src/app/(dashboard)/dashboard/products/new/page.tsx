@@ -23,6 +23,13 @@ import { CheckCircleIcon, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { UploadDropzone } from "@/lib/uploadthing";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const ProductFormSchema = ProductSchema.omit({
   id: true,
@@ -40,6 +47,7 @@ const ProductFormSchema = ProductSchema.omit({
     url: z.url("Link URL is required."),
     title: z.string().min(1, 'Link title is required.'),
   })),
+  license: z.string().optional(),
 });
 
 type ProductFormValues = z.infer<typeof ProductFormSchema>;
@@ -55,6 +63,7 @@ export default function NewProductPage() {
       icon: "",
       category: [],
       links: [],
+      license: "",
     },
     mode: "onChange",
   });
@@ -137,6 +146,33 @@ export default function NewProductPage() {
                   <Input type="text" inputMode="decimal" placeholder="e.g. 29.99" {...field} />
                 </FormControl>
                 <FormDescription>Enter the price in USD.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="license"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>License</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a license" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="MIT">MIT</SelectItem>
+                    <SelectItem value="Apache-2.0">Apache 2.0</SelectItem>
+                    <SelectItem value="GPL-3.0">GPLv3</SelectItem>
+                    <SelectItem value="Closed">Closed</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { baseProcedure, createTRPCRouter } from '@/trpc/init'
+import { authedProcedure, baseProcedure, createTRPCRouter } from '@/trpc/init'
 import { db } from '@/lib/db';
 import { eq, sql, desc, getTableColumns, and } from 'drizzle-orm';
 import {
@@ -80,7 +80,7 @@ export const appRouter = createTRPCRouter({
   /**
    * Create product
    */
-  createProduct: baseProcedure.input(CreateProductSchema).mutation(async ({ ctx, input }) => {
+  createProduct: authedProcedure.input(CreateProductSchema).mutation(async ({ ctx, input }) => {
     const verification = await checkBotId();
 
     if (verification.isBot) {
@@ -139,6 +139,7 @@ export const appRouter = createTRPCRouter({
         category: z.array(z.string()).optional(),
         links: z.array(ProductLinkSchema.omit({ id: true })).optional(),
         images: z.array(ProductImageSchema.omit({ id: true })).optional(),
+        license: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {

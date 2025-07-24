@@ -15,6 +15,13 @@
       "when": 1753084665448,
       "tag": "0001_right_thing",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1753344056010,
+      "tag": "0002_absurd_warpath",
+      "breakpoints": true
     }
   ]
 }
