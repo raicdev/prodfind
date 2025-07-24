@@ -1,36 +1,26 @@
 import React from 'react';
-import { Search, Zap, Filter, BarChart3, Shield, Globe } from 'lucide-react';
+import { BarChart3, Search, Shield, Upload } from 'lucide-react';
 
 const features = [
     {
         name: 'Find Instantly',
-        description: '',
+        description: 'Search for products by name, brand, or keywords.',
         icon: Search,
     },
     {
-        name: 'Real-time Updates',
-        description: 'Get notified immediately when products match your criteria or prices change.',
-        icon: Zap,
+        name: "Publish easily",
+        description: "Publish your products to the world with ease.",
+        icon: Upload,
     },
     {
-        name: 'Advanced Filters',
-        description: 'Filter by price, brand, ratings, availability, and custom parameters.',
-        icon: Filter,
-    },
-    {
-        name: 'Price Analytics',
-        description: 'Track price history and trends to make informed purchasing decisions.',
-        icon: BarChart3,
-    },
-    {
-        name: 'Secure & Private',
-        description: 'Your searches and data are encrypted and never shared with third parties.',
+        name: "Secure & Private",
+        description: "Your searches and browsing history are not saved.",
         icon: Shield,
     },
     {
-        name: 'Global Coverage',
-        description: 'Search products from retailers and marketplaces worldwide.',
-        icon: Globe,
+        name: "Ranking",
+        description: "Rank products by recommendation count.",
+        icon: BarChart3,
     },
 ];
 
@@ -41,10 +31,10 @@ export default function Features() {
                 <div className="lg:text-center">
                     <h2 className="text-base text-primary font-semibold tracking-wide uppercase">Features</h2>
                     <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-foreground sm:text-4xl">
-                        Everything you need to find products
+                        Why Prodfind?
                     </p>
                     <p className="mt-4 max-w-2xl text-xl text-muted-foreground lg:mx-auto">
-                        ProdFind makes product discovery simple with powerful tools and intelligent features.
+                        Prodfind makes product discovery simple with powerful tools and intelligent features.
                     </p>
                 </div>
 

@@ -1,12 +1,9 @@
 import {
   BoltIcon,
-  BookOpenIcon,
-  Layers2Icon,
+  HomeIcon,
   LogInIcon,
   LogOutIcon,
-  PinIcon,
   UserIcon,
-  UserPenIcon,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -81,14 +78,16 @@ export default function UserMenu() {
               src={session.user.image ?? undefined}
               alt="Profile image"
             />
-            <AvatarFallback>{session.user.name?.charAt(0)}</AvatarFallback>
+            <AvatarFallback>
+              {session.user.name ? session.user.name.charAt(0) : "A"}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="max-w-64" align="end">
         <DropdownMenuLabel className="flex min-w-0 flex-col">
           <span className="text-foreground truncate text-sm font-medium">
-            {session.user.name}
+            {session.user.name ? session.user.name : "Anonymous"}
           </span>
           <span className="text-muted-foreground truncate text-xs font-normal">
             {session.user.email}
@@ -97,29 +96,25 @@ export default function UserMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/dashboard">
-              <BoltIcon size={16} className="opacity-60" aria-hidden="true" />
-              <span>Dashboard</span>
+            <Link href="/">
+              <HomeIcon size={16} className="opacity-60" aria-hidden="true" />
+              <span>Home</span>
             </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Layers2Icon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Option 2</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <BookOpenIcon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Option 3</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <PinIcon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Option 4</span>
+          <DropdownMenuItem asChild>
+            <Link href="/account">
+              <UserIcon size={16} className="opacity-60" aria-hidden="true" />
+              <span>Account</span>
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <UserPenIcon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Option 5</span>
+          <DropdownMenuItem asChild>
+            <Link href="/dashboard">
+              <BoltIcon size={16} className="opacity-60" aria-hidden="true" />
+              <span>Dashboard</span>
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

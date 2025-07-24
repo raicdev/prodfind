@@ -2,16 +2,19 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { passkey } from "better-auth/plugins/passkey"
 import { oneTap } from "better-auth/plugins";
+import { twoFactor } from "better-auth/plugins/two-factor";
+import { admin as adminPlugin } from "better-auth/plugins";
 
 import { db } from "./db";
 import { sendEmail } from "./email";
 
 export const auth = betterAuth({
+    appName: "Prodfind",
     database: drizzleAdapter(db, {
         provider: "pg",
         usePlural: true,
     }),
-    plugins: [passkey(), oneTap()],
+    plugins: [passkey(), oneTap(), twoFactor(), adminPlugin()],
     emailVerification: {
         sendVerificationEmail: async ({ user, token, url }) => {
             await sendEmail({
@@ -52,4 +55,19 @@ export const auth = betterAuth({
         // },
     },
     trustedOrigins: [process.env.NEXT_PUBLIC_BETTER_AUTH_URL!],
+    user: {
+        deleteUser: {
+            enabled: true,
+        },
+        changeEmail: {
+            enabled: true,
+            sendChangeEmailVerification: async ({ user, newEmail, url, token }, request) => {
+                await sendEmail({
+                    to: user.email,
+                    subject: 'Approve email change',
+                    html: `<p>Click the link to approve the change: <a href="${url}">${url}</a></p>`
+                })
+            }
+        }
+    }
 });

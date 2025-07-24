@@ -112,6 +112,18 @@
   --sidebar-ring: oklch(0.488 0.243 264.376);
 }
 
+h1 {
+  @apply tracking-tight;
+}
+
+h2 {
+  @apply tracking-tight;
+}
+
+h3 {
+  @apply tracking-tight;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -119,4 +131,22 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    scrollbar-width: none;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--primary);
+  border-radius: 8px;
 }

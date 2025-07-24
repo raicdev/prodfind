@@ -1,5 +1,5 @@
 import { createAuthClient } from "better-auth/react";
-import { oneTapClient } from "better-auth/client/plugins";
+import { oneTapClient, twoFactorClient, adminClient } from "better-auth/client/plugins";
 
 export const authClient = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL!,
@@ -14,5 +14,7 @@ export const authClient = createAuthClient({
         maxAttempts: 5     // Maximum number of attempts before triggering onPromptNotification (default: 5)
       }
     }),
+    twoFactorClient(),
+    adminClient(),
   ],
 });

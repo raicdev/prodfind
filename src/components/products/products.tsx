@@ -1,42 +1,53 @@
 "use client";
 
 import { Products as ProductsType } from "@/types/product";
-import { randomUUID } from "node:crypto";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Product } from "./product";
-import { Input } from "../ui/input";
-import { Loader2, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { trpc } from "@/trpc/client";
-import { useAuth } from "@/context/auth-context";
 
-export function Products({ dashboard }: { dashboard?: boolean }) {
-  const { session } = useAuth();
-  const [searchQuery, setSearchQuery] = React.useState("");
-  const [products, setProducts] = React.useState<ProductsType>([]);
-  const [visibleProducts, setVisibleProducts] = React.useState<
+export function Products({
+  initialProducts,
+  autoFocus
+}: {
+  initialProducts: ProductsType;
+  autoFocus?: boolean;
+}) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [visibleProducts, setVisibleProducts] = useState<
     ProductsType | undefined
-  >(products);
-
-  // Fix: use the trpc.getProducts.useQuery hook directly in the component body, not inside useEffect
-  const { data, isLoading } = trpc.getProducts.useQuery({
-    userId: dashboard ? session?.user?.id : undefined,
-  });
+  >(initialProducts);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (data) {
-      setProducts(data as unknown as ProductsType);
-      setVisibleProducts(data as unknown as ProductsType);
+    if (initialProducts) {
+      const filteredProducts = initialProducts.filter((product) =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setVisibleProducts(filteredProducts);
     }
-  }, [data, isLoading]);
+  }, [searchQuery, initialProducts]);
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <Loader2 className="w-4 h-4 animate-spin" />
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (autoFocus) {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (
+          e.key.length === 1 && 
+          !e.ctrlKey && 
+          !e.altKey && 
+          !e.metaKey && 
+          document.activeElement !== inputRef.current
+        ) {
+          inputRef.current?.focus();
+        }
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [autoFocus]);
 
   return (
     <div>
@@ -48,28 +59,24 @@ export function Products({ dashboard }: { dashboard?: boolean }) {
       >
         <Search size={16} className="text-muted-foreground" />
         <input
+          ref={inputRef}
           value={searchQuery}
-          className="border-none outline-none resize-none w-full"
+          className="border-none outline-none resize-none w-full bg-transparent"
           onChange={(e) => {
             setSearchQuery(e.target.value);
-            const filteredProducts = products.filter((product) => {
-              return product.name
-                .toLowerCase()
-                .includes(searchQuery.toLowerCase());
-            });
-            setVisibleProducts(filteredProducts);
           }}
           placeholder="Search products..."
           aria-label="Search products"
+          autoFocus={autoFocus}
         />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-        {visibleProducts?.length === 0 ? (
-          <Product product={null} />
-        ) : (
-          visibleProducts?.map((product) => (
+        {visibleProducts && visibleProducts.length > 0 ? (
+          visibleProducts.map((product) => (
             <Product key={product.id} product={product} />
           ))
+        ) : (
+          <Product product={null} />
         )}
       </div>
     </div>

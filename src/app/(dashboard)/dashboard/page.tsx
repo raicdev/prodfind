@@ -23,14 +23,16 @@ export default function DashboardPage() {
   const { session } = useAuth();
 
   return (
-    <div className="mx-auto">
-      <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
-      <p className="text-sm text-muted-foreground">
+    <div className="py-4">
+      <div className="mb-8">
+        <h1 className="text-3xl font-semibold mb-2">Dashboard</h1>
+        <p className="mt-2 text-muted-foreground">
         Welcome back, {session?.user?.name}!
       </p>
-
+      </div>
+      
       <div className="mt-8">
-        <h2 className="text-2xl font-bold mb-2">Quick actions</h2>
+        <h2 className="text-2xl font-semibold mb-2">Quick actions</h2>
         <p className="text-sm text-muted-foreground">
           Here are some quick actions you can take.
         </p>
@@ -46,7 +48,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Create a new product to get started.
+                Create a new product to get started. You can add images, links, and more.
               </p>
             </CardContent>
             <CardFooter>
@@ -94,14 +96,14 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Create a new product to get started.
+                View and manage your products. You can edit, delete, and more.
               </p>
             </CardContent>
             <CardFooter>
               <Button variant="outline" className="w-full" asChild>
-                <Link href="/dashboard/products/create">
-                  <PlusIcon className="w-4 h-4" />
-                  Create product
+                <Link href="/dashboard/products">
+                  <BoxIcon className="w-4 h-4" />
+                  View products
                 </Link>
               </Button>
             </CardFooter>

@@ -5,6 +5,9 @@ import { ThemeProvider } from "next-themes";
 import { TRPCProvider } from "@/trpc/client";
 import { AuthProvider } from "../context/auth-context";
 import { BotIdClient } from "botid/client";
+import { Toaster } from "sonner";
+import { Suspense } from "react";
+import { Loader2 } from "lucide-react";
 
 // Define the paths that need bot protection.
 // These are paths that are routed to by your app.
@@ -15,9 +18,13 @@ import { BotIdClient } from "botid/client";
 
 const protectedRoutes = [
   {
+    path: "/",
+    method: "*",
+  },
+  {
     path: "/api/*",
     method: "*",
-  }
+  },
 ];
 
 const inter = Inter({
@@ -42,15 +49,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-        <head>
-          <BotIdClient protect={protectedRoutes} />
-        </head>
+      <head>
+        <BotIdClient protect={protectedRoutes} />
+      </head>
       <body
         className={`${inter.variable} ${geistMono.variable} font-sans antialiased`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <TRPCProvider>
-            <AuthProvider>{children}</AuthProvider>
+            <AuthProvider>
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center h-screen">
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  </div>
+                }
+              >
+                {children}
+              </Suspense>
+              <Toaster position="top-right" richColors />
+            </AuthProvider>
           </TRPCProvider>
         </ThemeProvider>
       </body>

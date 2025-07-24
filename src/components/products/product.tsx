@@ -8,9 +8,15 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { CalendarRange, DollarSign, RefreshCcw } from "lucide-react";
+import { CalendarRange, DollarSign, RefreshCcw, Heart } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 export function Product({ product }: { product: ProductType | null }) {
   // This component should render the product details
@@ -30,7 +36,7 @@ export function Product({ product }: { product: ProductType | null }) {
   return (
     <Card className="!gap-4">
       <CardHeader>
-        {product.images.length > 0 && (
+        {product.images && product.images.length > 0 && (
           <img
             src={product.images[0].url}
             alt={product.name}
@@ -44,31 +50,71 @@ export function Product({ product }: { product: ProductType | null }) {
         <div className="flex items-center gap-1">
           <DollarSign size="18" />
           <span className="font-medium">{product.price}</span>
-        </div>
-        <div className="flex items-center gap-1 text-muted-foreground">
-          <CalendarRange size="18" />
-          <span className="text-sm">
-            {new Date(product.createdAt).toLocaleDateString()}
-          </span>
           <span>・</span>
-          <RefreshCcw size="18" />
-          <span className="text-sm">
-            {new Date(product.updatedAt).toLocaleDateString()}
-          </span>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <div className="flex items-center gap-1">
+                  <Heart size="18" className="fill-foreground" />
+                  <span className="font-medium">
+                    {product.recommendationCount || 0}
+                  </span>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Recommendations</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+        <div className="flex items-center gap-4 text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <div className="flex items-center gap-1">
+                    <CalendarRange size="18" />
+                    <span className="text-sm">
+                      {new Date(product.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Created at</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <span>・</span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <div className="flex items-center gap-1">
+                    <RefreshCcw size="18" />
+                    <span className="text-sm">
+                      {new Date(product.updatedAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Updated at</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
       </CardContent>
       <CardFooter className="flex flex-col md:flex-row gap-2 items-center">
-        <Button variant="outline" className="w-full md:max-w-1/2">
-          View Details
+        <Button variant="outline" className="w-full md:max-w-1/2" asChild>
+          <Link href={`/product/${product.id}`}>View Details</Link>
         </Button>
-        {product.links.length > 0 && (
-        <Button asChild className="w-full md:max-w-1/2">
-          <Link href={product.links[0].url.toString()} target="_blank">
-            Play
+        {product.links && product.links.length > 0 && (
+          <Button asChild className="w-full md:max-w-1/2">
+            <Link href={product.links[0].url.toString()} target="_blank">
+              Play
             </Link>
           </Button>
         )}
-        {product.links.length === 0 && (
+        {(!product.links || product.links.length === 0) && (
           <Button variant="outline" className="w-full md:max-w-1/2" disabled>
             Not available
           </Button>
