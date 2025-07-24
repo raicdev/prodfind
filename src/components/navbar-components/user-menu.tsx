@@ -22,7 +22,7 @@ import { useAuth } from "@/context/auth-context";
 import Link from "next/link";
 
 export default function UserMenu() {
-  const { session, signOut } = useAuth();
+  const { session, auth } = useAuth();
   const uuid = uuidv4().slice(0, 8);
 
   if (!session) {
@@ -118,7 +118,7 @@ export default function UserMenu() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => signOut()}>
+        <DropdownMenuItem onClick={() => auth.signOut()}>
           <LogOutIcon size={16} className="opacity-60" aria-hidden="true" />
           <span>Logout</span>
         </DropdownMenuItem>

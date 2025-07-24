@@ -13,7 +13,7 @@ import { toast } from "sonner";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { signUp, signIn, auth, error: authError, isPending } = useAuth();
+  const { auth, error: authError, isPending } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState("");
   const [form, setForm] = useState({ email: "", password: "" });
@@ -33,7 +33,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setError(null);
     try {
-      const { error } = await signUp.email({
+      const { error } = await auth.signUp.email({
         name: name,
         email: form.email,
         password: form.password,
@@ -53,7 +53,7 @@ export default function RegisterPage() {
 
   const handleSocialRegister = async (provider: string) => {
     try {
-      const data = await signIn.social({
+      const data = await auth.signIn.social({
         provider,
       });
       console.log(data);
