@@ -1,22 +1,8 @@
-import { createTRPCRouter, baseProcedure } from "@/trpc/init";
+import { createTRPCRouter, authedProcedure } from "@/trpc/init";
 import { db } from "@/lib/db";
 import { notifications } from "@/lib/db/schema";
 import { z } from "zod";
-import { TRPCError } from "@trpc/server";
 import { eq, and, desc } from "drizzle-orm";
-
-const authedProcedure = baseProcedure.use(async (opts) => {
-    const { session } = await opts.ctx;
-    if (!session?.user) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-    return opts.next({
-        ctx: {
-            ...opts.ctx,
-            user: session.user,
-        },
-    });
-});
 
 export const notificationsRouter = createTRPCRouter({
   get: authedProcedure.query(async ({ ctx }) => {

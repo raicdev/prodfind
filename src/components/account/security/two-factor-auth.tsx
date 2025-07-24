@@ -56,8 +56,12 @@ export function TwoFactorAuth() {
         setShowPasswordInput(false);
         setPassword("");
       }
-    } catch (error: any) {
-      toast.error(error.message || "Failed to enable 2FA");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message || "Failed to enable 2FA");
+      } else {
+        toast.error("Failed to enable 2FA");
+      }
     } finally {
       setIsPending(false);
     }
@@ -80,8 +84,12 @@ export function TwoFactorAuth() {
         setShowSetup(false);
         setVerificationCode("");
       }
-    } catch (error: any) {
-      toast.error(error.message || "Invalid verification code");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message || "Invalid verification code");
+      } else {
+        toast.error("Invalid verification code");
+      }
     } finally {
       setIsPending(false);
     }
@@ -101,8 +109,12 @@ export function TwoFactorAuth() {
       toast.success("Two-factor authentication disabled");
       setPassword("");
       setShowPasswordInput(false);
-    } catch (error: any) {
-      toast.error(error.message || "Failed to disable 2FA");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message || "Failed to disable 2FA");
+      } else {
+        toast.error("Failed to disable 2FA");
+      }
     } finally {
       setIsPending(false);
     }

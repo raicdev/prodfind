@@ -9,6 +9,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { trpc } from "@/trpc/client";
+import { useAuth } from "@/context/auth-context";
 
 function Dot({ className }: { className?: string }) {
   return (
@@ -28,7 +29,12 @@ function Dot({ className }: { className?: string }) {
 
 export default function NotificationMenu() {
   const utils = trpc.useUtils();
-  const { data: notifications, isLoading } = trpc.notifications.get.useQuery();
+  const { session } = useAuth();
+  
+  const { data: notifications, isLoading } = trpc.notifications.get.useQuery(
+    undefined,
+    { enabled: !!session }
+  );
 
   const markAsReadMutation = trpc.notifications.markAsRead.useMutation({
     onSuccess: () => {
@@ -41,6 +47,8 @@ export default function NotificationMenu() {
       utils.notifications.get.invalidate();
     },
   });
+
+  if (!session) return null;
 
   const unreadCount = notifications?.filter((n) => !n.read).length ?? 0;
 
@@ -88,6 +96,9 @@ export default function NotificationMenu() {
           className="bg-border -mx-1 my-1 h-px"
         ></div>
         {isLoading && <div className="p-4 text-sm">Loading...</div>}
+        {!isLoading && notifications?.length === 0 && (
+          <div className="p-4 text-sm">No notifications</div>
+        )}
         {notifications?.map((notification) => (
           <div
             key={notification.id}
@@ -101,10 +112,8 @@ export default function NotificationMenu() {
                 >
                   <span className="text-foreground font-medium hover:underline">
                     {notification.actor?.name || "Someone"}
-                  </span>
-                  {" "}
-                  {notification.action}
-                  {" "}
+                  </span>{" "}
+                  {notification.action}{" "}
                   <span className="text-foreground font-medium hover:underline">
                     {notification.product?.name || "a product"}
                   </span>

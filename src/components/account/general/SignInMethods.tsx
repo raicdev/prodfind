@@ -93,7 +93,7 @@ export function SignInMethods({ user }: Props) {
                 onClick={() => handleDisconnect("credential")}
                 disabled={isPending || user.accounts.length === 1}
               >
-                {isPending ? "Disconnecting..." : "Disable"}
+                {isPending ? "Disconnecting..." : user.accounts.length === 1 ? "Cannot disable" : "Disable"}
               </Button>
             ) : (
               <Button
@@ -134,7 +134,7 @@ export function SignInMethods({ user }: Props) {
               <Button
                 variant="outline"
                 onClick={() => handleConnect("google")}
-                disabled={isPending || user.accounts.length === 1}
+                disabled={isPending}
               >
                 {isPending
                   ? "Connecting..."

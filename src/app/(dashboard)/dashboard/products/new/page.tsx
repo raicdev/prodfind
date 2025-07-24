@@ -22,6 +22,7 @@ import { useState } from "react";
 import { CheckCircleIcon, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { UploadDropzone } from "@/lib/uploadthing";
+import { toast } from "sonner";
 
 const ProductFormSchema = ProductSchema.omit({
   id: true,
@@ -152,7 +153,7 @@ export default function NewProductPage() {
                   }
                 }}
                 onUploadError={(error: Error) => {
-                  alert(`ERROR! ${error.message}`);
+                  toast.error(`ERROR! ${error.message}`);
                 }}
               />
             </div>
@@ -206,7 +207,7 @@ export default function NewProductPage() {
                   }
                 }}
                 onUploadError={(error: Error) => {
-                  alert(`ERROR! ${error.message}`);
+                  toast.error(`ERROR! ${error.message}`);
                 }}
               />
             </div>

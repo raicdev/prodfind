@@ -1,5 +1,5 @@
 import { auth } from '@/lib/auth'
-import { initTRPC } from '@trpc/server'
+import { initTRPC, TRPCError } from '@trpc/server'
 import { cache } from 'react'
 import { headers } from 'next/headers'
 
@@ -34,3 +34,16 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 export const createTRPCRouter = t.router
 export const createCallerFactory = t.createCallerFactory
 export const baseProcedure = t.procedure
+
+export const authedProcedure = baseProcedure.use(async (opts) => {
+  const { session } = await opts.ctx;
+  if (!session?.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  return opts.next({
+      ctx: {
+          ...opts.ctx,
+          user: session.user,
+      },
+  });
+});

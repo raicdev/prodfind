@@ -29,12 +29,18 @@ export const usersRouter = createTRPCRouter({
                         success: false,
                     };
                 }
-            } catch (error: any) {
-                console.error(error);
-                return {
-                    success: false,
-                    error: error.message,
-                };
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    return {
+                        success: false,
+                        error: error.message,
+                    };
+                } else {
+                    return {
+                        success: false,
+                        error: 'An unknown error occurred',
+                    };
+                }
             }
         }),
 });

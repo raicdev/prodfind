@@ -59,7 +59,7 @@ export function ProductEdit({ product }: ProductEditProps) {
         setIconFile([]);
       },
       onUploadError: (error: Error) => {
-        alert(`ERROR! ${error.message}`);
+        toast.error(`ERROR! ${error.message}`);
       },
     });
 
@@ -79,7 +79,7 @@ export function ProductEdit({ product }: ProductEditProps) {
         setImageFiles([]);
       },
       onUploadError: (error: Error) => {
-        alert(`ERROR! ${error.message}`);
+        toast.error(`ERROR! ${error.message}`);
       },
     });
 
@@ -88,8 +88,12 @@ export function ProductEdit({ product }: ProductEditProps) {
       toast.success("Product updated successfully");
       setIsEditing(false);
     },
-    onError: (error: any) => {
-      toast.error(error.message || "Failed to update product");
+    onError: (error: unknown) => {
+      if (error instanceof Error) {
+        toast.error(error.message || "Failed to update product");
+      } else {
+        toast.error("Failed to update product");
+      }
     },
   });
 
