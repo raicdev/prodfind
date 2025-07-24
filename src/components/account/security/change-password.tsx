@@ -74,7 +74,7 @@ export function ChangePassword() {
 
   if (isCheckingProvider) {
     return (
-      <Card>
+      <Card className="bg-secondary">
         <CardHeader>
           <CardTitle>Password</CardTitle>
         </CardHeader>
@@ -89,7 +89,7 @@ export function ChangePassword() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Card>
+      <Card className="bg-secondary">
         <CardHeader>
           <CardTitle>Password</CardTitle>
           <CardDescription>

@@ -1,7 +1,7 @@
 "use client";
 
 import InfoMenu from "@/components/navbar-components/info-menu";
-import Logo from "@/components/navbar-components/logo";
+import Logo from "@/components/logo";
 import NotificationMenu from "@/components/navbar-components/notification-menu";
 import UserMenu from "@/components/navbar-components/user-menu";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,7 @@ import Link from "next/link";
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
   { href: "/", label: "Home" },
-  { href: "/features", label: "Features" },
+  { href: "/explore", label: "Explore" },
 ];
 
 export default function Header() {
@@ -106,8 +106,8 @@ export default function Header() {
           </Popover>
           {/* Main nav */}
           <div className="flex items-center gap-6">
-            <Link href="/" className="text-xl font-semibold">
-              Prodfind
+            <Link href="/">
+              <Logo size={32} className="text-primary" />
             </Link>
             {/* Navigation menu */}
             <NavigationMenu className="max-md:hidden">

@@ -3,6 +3,7 @@
 import InfoMenu from "@/components/navbar-components/info-menu";
 import NotificationMenu from "@/components/navbar-components/notification-menu";
 import UserMenu from "@/components/navbar-components/user-menu";
+import Logo from "@/components/logo";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
@@ -16,7 +17,7 @@ export default function Header() {
       <div className="flex h-16 items-center justify-between gap-4">
         <div className="flex items-center gap-6">
           <Link href="/dashboard" className="text-xl font-semibold">
-            Prodfind
+            <Logo size={32} className="text-primary" />
           </Link>
         </div>
         <div className="flex items-center gap-4">

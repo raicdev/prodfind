@@ -133,6 +133,12 @@ h3 {
   }
 }
 
+@layer utilities {
+  .scrollbar-hide {
+    scrollbar-width: none;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

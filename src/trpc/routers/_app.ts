@@ -100,12 +100,6 @@ export const appRouter = createTRPCRouter({
   getProduct: baseProcedure.input(z.object({
     productId: z.string(),
   })).query(async ({ input }) => {
-    const verification = await checkBotId();
-
-    if (verification.isBot) {
-      throw new TRPCError({ code: "UNAUTHORIZED" })
-    }
-
     const product = await db.select()
       .from(productsTable)
       .where(eq(productsTable.id, input.productId))

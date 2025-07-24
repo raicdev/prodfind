@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { User, Globe, KeyRound, Lock } from "lucide-react";
 import UserMenu from "@/components/navbar-components/user-menu";
+import Logo from "@/components/logo";
 
 const links = [
   {
@@ -43,7 +44,9 @@ export default function AccountLayout({
   return (
     <div className="min-h-screen bg-black text-white">
       <header className="flex h-16 items-center justify-between px-4 md:px-6">
-        <div className="text-xl font-semibold">Prodfind</div>
+        <Link href="/" className="text-xl font-semibold">
+          <Logo size={32} className="text-primary" />
+        </Link>
         <UserMenu />
       </header>
       <div className="grid md:grid-cols-[0.4fr_1fr] gap-8 p-4 mt-10 md:p-8 pb-24 md:pb-8">

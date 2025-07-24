@@ -49,7 +49,7 @@ export function DeleteAccount() {
   }
 
   return (
-    <Card className="!gap-4">
+    <Card className="!gap-4 bg-secondary">
       <CardHeader>
         <CardTitle>Delete Account</CardTitle>
         <CardDescription>

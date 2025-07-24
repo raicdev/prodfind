@@ -1,20 +1,23 @@
 "use client";
 
 import { Products as ProductsType } from "@/types/product";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Product } from "./product";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Products({
   initialProducts,
+  autoFocus
 }: {
-  initialProducts?: ProductsType;
+  initialProducts: ProductsType;
+  autoFocus?: boolean;
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [visibleProducts, setVisibleProducts] = useState<
     ProductsType | undefined
   >(initialProducts);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (initialProducts) {
@@ -25,6 +28,26 @@ export function Products({
     }
   }, [searchQuery, initialProducts]);
 
+  useEffect(() => {
+    if (autoFocus) {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (
+          e.key.length === 1 && 
+          !e.ctrlKey && 
+          !e.altKey && 
+          !e.metaKey && 
+          document.activeElement !== inputRef.current
+        ) {
+          inputRef.current?.focus();
+        }
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [autoFocus]);
 
   return (
     <div>
@@ -36,6 +59,7 @@ export function Products({
       >
         <Search size={16} className="text-muted-foreground" />
         <input
+          ref={inputRef}
           value={searchQuery}
           className="border-none outline-none resize-none w-full bg-transparent"
           onChange={(e) => {
@@ -43,6 +67,7 @@ export function Products({
           }}
           placeholder="Search products..."
           aria-label="Search products"
+          autoFocus={autoFocus}
         />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">

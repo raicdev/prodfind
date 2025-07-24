@@ -1,12 +1,9 @@
 import {
   BoltIcon,
-  BookOpenIcon,
-  Layers2Icon,
+  HomeIcon,
   LogInIcon,
   LogOutIcon,
-  PinIcon,
   UserIcon,
-  UserPenIcon,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -81,7 +78,9 @@ export default function UserMenu() {
               src={session.user.image ?? undefined}
               alt="Profile image"
             />
-            <AvatarFallback>{session.user.name ? session.user.name.charAt(0) : "A"}</AvatarFallback>
+            <AvatarFallback>
+              {session.user.name ? session.user.name.charAt(0) : "A"}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -94,6 +93,15 @@ export default function UserMenu() {
             {session.user.email}
           </span>
         </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem asChild>
+            <Link href="/">
+              <HomeIcon size={16} className="opacity-60" aria-hidden="true" />
+              <span>Home</span>
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>

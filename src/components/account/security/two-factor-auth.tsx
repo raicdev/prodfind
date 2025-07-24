@@ -110,7 +110,7 @@ export function TwoFactorAuth() {
 
   if (showSetup) {
     return (
-      <Card>
+      <Card className="bg-secondary">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <QrCode className="w-5 h-5" />
@@ -194,7 +194,7 @@ export function TwoFactorAuth() {
 
   if (showPasswordInput) {
     return (
-      <Card>
+      <Card className="bg-secondary">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="w-5 h-5" />
@@ -245,7 +245,7 @@ export function TwoFactorAuth() {
   }
 
   return (
-    <Card>
+    <Card className="bg-secondary">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           {is2FAEnabled ? (

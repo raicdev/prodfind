@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { auth } from "@/lib/auth";
-import { Badge } from "../ui/badge";
 
 const navLinks = [
   { value: "dashboard", label: "Home", href: "/dashboard" },
@@ -15,7 +14,7 @@ const navLinks = [
     label: "Recommendations",
     href: "/dashboard/recommendations",
   },
-  { value: "explore", label: "Explore", href: "/explore" },
+  { value: "explore", label: "Explore", href: "/dashboard/explore" },
   { value: "admin", label: "Admin", href: "/admin", isAdmin: true },
 ];
 
@@ -34,7 +33,7 @@ export default function TabsNav({
   return (
     <div className="sticky top-0 z-50 border-b-2 shadow-sm bg-background p-2">
       <Tabs value={getCurrentTab()} className="w-full">
-        <TabsList className="w-full justify-start p-0 bg-background overflow-x-auto">
+        <TabsList className="w-full justify-start p-0 bg-background overflow-x-auto scrollbar-hide">
           {navLinks
             .filter((link) => !link.isAdmin || session?.user.role === "admin")
             .map((link) => (

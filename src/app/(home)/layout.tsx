@@ -9,7 +9,7 @@ export default function HomeLayout({
   return (
     <>
       <Header />
-      <main className="px-8">{children}</main>
+      <main>{children}</main>
       <Footer />
     </>
   );

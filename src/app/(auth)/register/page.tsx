@@ -142,10 +142,12 @@ export default function RegisterPage() {
             </Button>
             <Button
               variant="outline"
+              disabled
               onClick={() => handleSocialRegister("github")}
             >
               <SiGithub size={18} />
-              Register with GitHub
+              {/* Register with GitHub */}
+              Soon
             </Button>
           </div>
           <div className="mt-6 text-center text-sm text-muted-foreground">
