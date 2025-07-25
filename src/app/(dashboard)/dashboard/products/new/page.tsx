@@ -21,7 +21,7 @@ import { trpc } from "@/trpc/client";
 import { useState } from "react";
 import { CheckCircleIcon, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { UploadDropzone } from "@/lib/uploadthing";
+import { UploadDropzone } from "@/components/ui/upload-dropzone";
 import { toast } from "sonner";
 import {
   Select,
@@ -39,6 +39,7 @@ const ProductFormSchema = ProductSchema.omit({
 }).extend({
   name: z.string().min(1, { message: "Product name is required." }),
   description: z.string().min(1, { message: "Description is required." }),
+  shortDescription: z.string().min(1, { message: "Short description is required." }).max(100, { message: "Short description must be 100 characters or less." }),
   price: z.string().min(1, { message: "Price is required." }),
   images: z.array(ProductImageSchema.extend({
     url: z.url("Image URL is required."),
@@ -58,6 +59,7 @@ export default function NewProductPage() {
     defaultValues: {
       name: "",
       description: "",
+      shortDescription: "",
       price: "",
       images: [],
       icon: "",
@@ -79,9 +81,6 @@ export default function NewProductPage() {
   const [isCreated, setIsCreated] = useState(false);
 
   async function onSubmit(data: ProductFormValues) {
-    console.log("Form submitted with data:", data);
-    // TODO: Call a server action to save the product data to the database.
-    // Example: await createProductAction(data);
     createProduct(data, {
       onSuccess: (data) => {
         console.log("Product created:", data);
@@ -127,10 +126,37 @@ export default function NewProductPage() {
                 <FormControl>
                   <Textarea
                     placeholder="Describe your product in a few sentences."
+                    className="resize-none min-h-[100px]"
+                    style={{ height: 'auto' }}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      e.target.style.height = 'auto';
+                      e.target.style.height = e.target.scrollHeight + 'px';
+                    }}
+                    value={field.value}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="shortDescription"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Short Description</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="A short summary of the product (max 100 characters)"
                     className="resize-none"
                     {...field}
                   />
                 </FormControl>
+                <FormDescription>
+                  This will be shown in product listings.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

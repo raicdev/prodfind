@@ -36,6 +36,12 @@ export function Product({ product }: { product: ProductType | null }) {
   return (
     <Card className="!gap-4">
       <CardHeader>
+        {!product.images ||
+          (product.images.length === 0 && (
+            <div className="w-full h-48 bg-muted rounded-md mb-4 flex items-center justify-center">
+              <p className="text-sm text-muted-foreground">No images</p>
+            </div>
+          ))}
         {product.images && product.images.length > 0 && (
           <img
             src={product.images[0].url}
@@ -44,9 +50,9 @@ export function Product({ product }: { product: ProductType | null }) {
           />
         )}
         <CardTitle>{product.name}</CardTitle>
-        <CardDescription>{product.description}</CardDescription>
+        <CardDescription>{product.shortDescription || product.description?.slice(0, 100) + (product.description?.length && product.description?.length > 100 ? "..." : "")}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="mt-auto">
         <div className="flex items-center gap-1">
           <DollarSign size="18" />
           <span className="font-medium">{product.price}</span>

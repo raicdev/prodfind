@@ -28,6 +28,7 @@ import { ProductGallery } from "@/components/product/product-gallery";
 import { ProductWithAuthor } from "@/types/product";
 import { useState } from "react";
 import { getLicenseText } from "@/lib/licenses";
+import { Markdown } from "../products/markdown";
 
 const LinkIcon = ({ link }: { link: { title: string; url: string } }) => {
   if (!link.title && !link.url)
@@ -183,9 +184,9 @@ export function ProductDetail({
                 <h2 className="text-2xl font-semibold mb-4">
                   About this product
                 </h2>
-                <p className="text-foreground/90 leading-relaxed">
-                  {product.description}
-                </p>
+                <div className="bg-card border rounded-md p-6">
+                  <Markdown content={product.description} />
+                </div>
               </div>
             </TabsContent>
             <TabsContent value="creator" className="mt-6">
