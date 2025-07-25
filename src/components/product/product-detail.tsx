@@ -206,9 +206,9 @@ export function ProductDetail({
                       <div>
                         <div className="font-semibold flex items-center gap-1 text-lg">
                           {product.author.name}
-                          {product.author.emailVerified && (
+                          {/* {product.author.emailVerified && (
                             <BadgeCheck className="!w-5 !h-5 text-primary" />
-                          )}
+                          )} */}
                         </div>
                         <p className="text-sm text-muted-foreground font-mono text-base">
                           {product.author.id.slice(0, 6)}...
@@ -216,13 +216,13 @@ export function ProductDetail({
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 mt-4">
+                    {/* <div className="flex items-center gap-2 mt-4">
                       {product.author.emailVerified && (
                         <Badge className="text-sm">
                           <BadgeCheck className="!w-4 !h-4" /> Verified Creator
                         </Badge>
                       )}
-                    </div>
+                    </div> */}
                     {/* {product.author.bio && (
                   <p className="mt-4 text-muted-foreground">
                     {product.author.bio}
@@ -310,9 +310,9 @@ export function ProductDetail({
                 <div>
                   <div className="font-semibold flex items-center gap-1">
                     {product.author.name}
-                    {product.author.emailVerified && (
+                    {/* {product.author.emailVerified && (
                       <BadgeCheck className="text-blue-500" size={16} />
-                    )}
+                    )} */}
                   </div>
                   <p className="text-sm text-muted-foreground font-mono">
                     {product.author.id.slice(0, 6)}...

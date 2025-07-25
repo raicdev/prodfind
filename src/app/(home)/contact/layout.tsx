@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Contact - Prodfind",
-  description: "Contact to Prodfind Team.",
+  description: "Contact the Prodfind Team.",
 };
 
 export default function ContactLayout({

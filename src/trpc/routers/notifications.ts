@@ -1,6 +1,6 @@
 import { createTRPCRouter, authedProcedure } from "@/trpc/init";
 import { db } from "@/lib/db";
-import { notifications } from "@/lib/db/schema";
+import { notifications, SAFE_USER_COLUMNS } from "@/lib/db/schema";
 import { z } from "zod";
 import { eq, and, desc } from "drizzle-orm";
 
@@ -9,7 +9,14 @@ export const notificationsRouter = createTRPCRouter({
     const data = await db.query.notifications.findMany({
       where: eq(notifications.userId, ctx.user.id),
       with: {
-        actor: true,
+        actor: {
+          columns: {
+            id: true,
+            name: true,
+            image: true,
+            createdAt: true
+          }
+        },
         product: true,
       },
       orderBy: [desc(notifications.createdAt)],

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SafeUserSchema } from "./user";
 
 export const ProductLinkSchema = z.object({
     id: z.uuid(),
@@ -33,15 +34,7 @@ export const ProductSchema = z.object({
 });
 
 export const ProductWithAuthorSchema = ProductSchema.extend({
-    author: z.object({
-        id: z.uuid(),
-        name: z.string(),
-        email: z.string(),
-        emailVerified: z.boolean(),
-        image: z.string().optional(),
-        createdAt: z.date(),
-        updatedAt: z.date(),
-    }),
+    author: SafeUserSchema,
 });
 
 export const ProductsSchema = z.array(ProductSchema);

@@ -278,7 +278,7 @@ export default function AdminPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <p className="font-medium">
-                        &quot;{appeal.metadata.productName}&quot; by {appeal.user?.name || appeal.user?.email}
+                        &quot;{appeal.metadata.productName}&quot; by {appeal.user?.name || 'Unknown User'}
                       </p>
                       {appeal.metadata.appealRejected && (
                         <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">

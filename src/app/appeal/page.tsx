@@ -5,24 +5,30 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { AlertTriangle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { trpc } from "@/trpc/client";
 import { useAuth } from "@/context/auth-context";
 import { toast } from "sonner";
+import { Notification } from "@/types/notification";
 
 export default function AppealPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const notificationId = searchParams.get("notificationId");
   const { session } = useAuth();
-  
-  const [appealMessage, setAppealMessage] = useState("");
-  const [notification, setNotification] = useState<any>(null);
 
-  const { data: notifications } = trpc.notifications.get.useQuery(
-    undefined,
-    { enabled: !!session }
-  );
+  const [appealMessage, setAppealMessage] = useState("");
+  const [notification, setNotification] = useState<Notification | null>(null);
+
+  const { data: notifications } = trpc.notifications.get.useQuery(undefined, {
+    enabled: !!session,
+  });
 
   const appealMutation = trpc.notifications.appealProductRemoval.useMutation({
     onSuccess: () => {
@@ -36,7 +42,9 @@ export default function AppealPage() {
 
   useEffect(() => {
     if (notifications && notificationId) {
-      const foundNotification = notifications.find(n => n.id === notificationId);
+      const foundNotification = notifications.find(
+        (n) => n.id === notificationId
+      );
       if (foundNotification && foundNotification.action === "product_removed") {
         setNotification(foundNotification);
       }
@@ -44,7 +52,7 @@ export default function AppealPage() {
   }, [notifications, notificationId]);
 
   if (!session) {
-    router.push("/login");
+    router.replace("/login");
     return null;
   }
 
@@ -81,7 +89,9 @@ export default function AppealPage() {
     );
   }
 
-  const metadata = notification.metadata ? JSON.parse(notification.metadata) : {};
+  const metadata = notification.metadata
+    ? JSON.parse(notification.metadata)
+    : {};
   const canAppeal = metadata.canAppeal && !metadata.appealed;
 
   if (!canAppeal) {
@@ -91,13 +101,13 @@ export default function AppealPage() {
           <CardHeader>
             <CardTitle>Appeal Not Available</CardTitle>
             <CardDescription>
-              {metadata.appealed 
+              {metadata.appealed
                 ? "You have already submitted an appeal for this product removal."
-                : "This product removal cannot be appealed."
-              }
+                : "This product removal cannot be appealed."}
               {metadata.appealRejected && (
                 <div className="text-xs text-red-600 mt-1">
-                  Rejection reason: {metadata.rejectionReason || "No reason provided"}
+                  Rejection reason:{" "}
+                  {metadata.rejectionReason || "No reason provided"}
                 </div>
               )}
             </CardDescription>
@@ -125,8 +135,8 @@ export default function AppealPage() {
   return (
     <div className="container max-w-2xl mx-auto py-8">
       <div className="mb-6">
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           onClick={() => router.push("/dashboard")}
           className="mb-4"
         >
@@ -149,7 +159,8 @@ export default function AppealPage() {
           <div className="bg-muted p-4 rounded-lg">
             <h3 className="font-medium text-sm mb-2">Product Removed:</h3>
             <p className="text-sm text-muted-foreground">
-              &quot;{metadata.productName || "Unknown Product"}&quot; was removed for &quot;{metadata.reason || "unknown reason"}&quot;.
+              &quot;{metadata.productName || "Unknown Product"}&quot; was
+              removed for &quot;{metadata.reason || "unknown reason"}&quot;.
             </p>
             <p className="text-xs text-muted-foreground mt-2">
               Removed on {new Date(notification.createdAt).toLocaleString()}
@@ -173,15 +184,14 @@ export default function AppealPage() {
           </div>
 
           <div className="flex justify-end gap-2">
-            <Button
-              variant="outline"
-              onClick={() => router.push("/dashboard")}
-            >
+            <Button variant="outline" onClick={() => router.push("/dashboard")}>
               Cancel
             </Button>
             <Button
               onClick={handleSubmit}
-              disabled={appealMessage.trim().length < 10 || appealMutation.isPending}
+              disabled={
+                appealMessage.trim().length < 10 || appealMutation.isPending
+              }
             >
               {appealMutation.isPending ? "Submitting..." : "Submit Appeal"}
             </Button>
