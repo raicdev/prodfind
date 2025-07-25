@@ -1,4 +1,10 @@
 import React from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy - Prodfind",
+  description: "Privacy Policy for Prodfind",
+};
 
 export default function PrivacyPage() {
   return (
