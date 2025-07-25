@@ -122,7 +122,7 @@ export default function NewProductPage() {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>Description (Supports Markdown)</FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder="Describe your product in a few sentences."
