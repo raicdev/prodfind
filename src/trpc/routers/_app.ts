@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { authedProcedure, baseProcedure, createTRPCRouter } from '@/trpc/init'
 import { db } from '@/lib/db';
-import { eq, sql, desc, getTableColumns, and } from 'drizzle-orm';
+import { eq, sql, desc, getTableColumns, and, isNull } from 'drizzle-orm';
 import {
   products as productsTable,
   users as usersTable,
@@ -20,6 +20,7 @@ import { sessionRouter } from './session';
 import { notificationsRouter } from './notifications';
 import { TRPCError } from '@trpc/server';
 import { usersRouter } from './users';
+import { contactRouter } from './contact';
 
 const CreateProductSchema = ProductSchema.omit({
   id: true,
@@ -44,6 +45,7 @@ export const appRouter = createTRPCRouter({
   users: usersRouter,
   session: sessionRouter,
   notifications: notificationsRouter,
+  contact: contactRouter,
   /**
    * Get products
    */
@@ -66,9 +68,14 @@ export const appRouter = createTRPCRouter({
         )
         .$dynamic();
 
+      // Only show non-deleted products
+      let whereConditions = isNull(productsTable.deletedAt);
+      
       if (input.userId) {
-        qb = qb.where(eq(productsTable.authorId, input.userId));
+        whereConditions = and(whereConditions, eq(productsTable.authorId, input.userId));
       }
+      
+      qb = qb.where(whereConditions);
 
       const products = await qb.orderBy(desc(productsTable.createdAt));
 
@@ -102,7 +109,10 @@ export const appRouter = createTRPCRouter({
   })).query(async ({ input }) => {
     const product = await db.select()
       .from(productsTable)
-      .where(eq(productsTable.id, input.productId))
+      .where(and(
+        eq(productsTable.id, input.productId),
+        isNull(productsTable.deletedAt)
+      ))
       .limit(1);
 
     if (!product[0]) {
@@ -206,6 +216,230 @@ export const appRouter = createTRPCRouter({
 
       return { success: true };
     }),
+
+  /**
+   * Admin delete product (for ToS violations)
+   */
+  adminDeleteProduct: authedProcedure
+    .input(z.object({ 
+      productId: z.string(),
+      reason: z.string().default("Violates Terms of Service")
+    }))
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.session?.user?.id) {
+        throw new TRPCError({ code: "UNAUTHORIZED" })
+      }
+
+      // Check if user has admin role
+      const user = await db
+        .select()
+        .from(usersTable)
+        .where(eq(usersTable.id, ctx.session.user.id))
+        .limit(1);
+
+      if (!user[0] || user[0].role !== 'admin') {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" })
+      }
+
+      const product = await db
+        .select()
+        .from(productsTable)
+        .where(eq(productsTable.id, input.productId))
+        .limit(1);
+
+      if (!product[0]) {
+        throw new Error("Product not found");
+      }
+
+      // Create notification for the product author
+      await db.insert(notificationsTable).values({
+        userId: product[0].authorId,
+        action: "product_removed",
+        target: input.productId,
+        read: false,
+        createdAt: new Date(),
+        actorId: ctx.session.user.id,
+        metadata: JSON.stringify({
+          productName: product[0].name,
+          reason: input.reason,
+          canAppeal: true
+        }),
+      });
+
+      // Soft delete the product
+      await db.update(productsTable)
+        .set({
+          deletedAt: new Date(),
+          deletedBy: ctx.session.user.id,
+          deletionReason: input.reason,
+          updatedAt: new Date()
+        })
+        .where(eq(productsTable.id, input.productId));
+
+      return { success: true };
+    }),
+
+  /**
+   * Admin restore product (approve appeal)
+   */
+  adminRestoreProduct: authedProcedure
+    .input(z.object({ 
+      productId: z.string() 
+    }))
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.session?.user?.id) {
+        throw new TRPCError({ code: "UNAUTHORIZED" })
+      }
+
+      // Check if user has admin role
+      const user = await db
+        .select()
+        .from(usersTable)
+        .where(eq(usersTable.id, ctx.session.user.id))
+        .limit(1);
+
+      if (!user[0] || user[0].role !== 'admin') {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" })
+      }
+
+      const product = await db
+        .select()
+        .from(productsTable)
+        .where(eq(productsTable.id, input.productId))
+        .limit(1);
+
+      if (!product[0]) {
+        throw new Error("Product not found");
+      }
+
+      if (!product[0].deletedAt) {
+        throw new Error("Product is not deleted");
+      }
+
+      // Restore the product
+      await db.update(productsTable)
+        .set({
+          deletedAt: null,
+          deletedBy: null,
+          deletionReason: null,
+          updatedAt: new Date()
+        })
+        .where(eq(productsTable.id, input.productId));
+
+      // Create notification for the product author
+      await db.insert(notificationsTable).values({
+        userId: product[0].authorId,
+        action: "product_restored",
+        target: input.productId,
+        read: false,
+        createdAt: new Date(),
+        actorId: ctx.session.user.id,
+        metadata: JSON.stringify({
+          productName: product[0].name,
+          message: "Your appeal was approved and your product has been restored"
+        }),
+      });
+
+      return { success: true };
+    }),
+
+  /**
+   * Admin reject appeal
+   */
+  adminRejectAppeal: authedProcedure
+    .input(z.object({ 
+      notificationId: z.string(),
+      rejectionReason: z.string().optional()
+    }))
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.session?.user?.id) {
+        throw new TRPCError({ code: "UNAUTHORIZED" })
+      }
+
+      // Check if user has admin role
+      const user = await db
+        .select()
+        .from(usersTable)
+        .where(eq(usersTable.id, ctx.session.user.id))
+        .limit(1);
+
+      if (!user[0] || user[0].role !== 'admin') {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" })
+      }
+
+      const notification = await db
+        .select()
+        .from(notificationsTable)
+        .where(eq(notificationsTable.id, input.notificationId))
+        .limit(1);
+
+      if (!notification[0]) {
+        throw new Error("Notification not found");
+      }
+
+      const metadata = notification[0].metadata ? JSON.parse(notification[0].metadata) : {};
+
+      // Update the metadata to mark appeal as rejected
+      await db
+        .update(notificationsTable)
+        .set({
+          metadata: JSON.stringify({
+            ...metadata,
+            appealRejected: true,
+            rejectionReason: input.rejectionReason || "Appeal was reviewed and rejected",
+            rejectedBy: ctx.session.user.id,
+            rejectedAt: new Date().toISOString()
+          })
+        })
+        .where(eq(notificationsTable.id, input.notificationId));
+
+      return { success: true };
+    }),
+
+  /**
+   * Get appealed product removals for admin review
+   */
+  getAppealedProducts: authedProcedure.query(async ({ ctx }) => {
+    if (!ctx.session?.user?.id) {
+      throw new TRPCError({ code: "UNAUTHORIZED" })
+    }
+
+    // Check if user has admin role
+    const user = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, ctx.session.user.id))
+      .limit(1);
+
+    if (!user[0] || user[0].role !== 'admin') {
+      throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" })
+    }
+
+    // Get notifications where products were removed and appeals were submitted
+    const appealedNotifications = await db
+      .select({
+        notification: notificationsTable,
+        user: usersTable,
+        product: productsTable
+      })
+      .from(notificationsTable)
+      .leftJoin(usersTable, eq(notificationsTable.userId, usersTable.id))
+      .leftJoin(productsTable, eq(notificationsTable.target, productsTable.id))
+      .where(eq(notificationsTable.action, "product_removed"))
+      .orderBy(desc(notificationsTable.createdAt));
+
+    // Filter for appeals that have been submitted
+    return appealedNotifications
+      .map(item => {
+        const metadata = item.notification.metadata ? JSON.parse(item.notification.metadata) : {};
+        return {
+          ...item,
+          metadata,
+          hasAppeal: !!metadata.appealed
+        };
+      })
+      .filter(item => item.hasAppeal);
+  }),
 
   addBookmark: baseProcedure
     .input(z.object({ productId: z.string() }))

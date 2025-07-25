@@ -39,4 +39,49 @@ export const notificationsRouter = createTRPCRouter({
       .where(eq(notifications.userId, ctx.user.id));
     return true;
   }),
+
+  appealProductRemoval: authedProcedure
+    .input(z.object({ 
+      notificationId: z.string(),
+      appealMessage: z.string().min(10, "Appeal message must be at least 10 characters")
+    }))
+    .mutation(async ({ ctx, input }) => {
+      // Get the notification
+      const notification = await db
+        .select()
+        .from(notifications)
+        .where(
+          and(
+            eq(notifications.id, input.notificationId),
+            eq(notifications.userId, ctx.user.id),
+            eq(notifications.action, "product_removed")
+          )
+        )
+        .limit(1);
+
+      if (!notification[0]) {
+        throw new Error("Notification not found or cannot be appealed");
+      }
+
+      const metadata = notification[0].metadata ? JSON.parse(notification[0].metadata) : {};
+      
+      if (!metadata.canAppeal) {
+        throw new Error("This product removal cannot be appealed");
+      }
+
+      // Update the metadata to mark as appealed
+      await db
+        .update(notifications)
+        .set({
+          metadata: JSON.stringify({
+            ...metadata,
+            appealed: true,
+            appealMessage: input.appealMessage,
+            appealDate: new Date().toISOString()
+          })
+        })
+        .where(eq(notifications.id, input.notificationId));
+
+      return { success: true, message: "Appeal submitted successfully" };
+    }),
 }); 

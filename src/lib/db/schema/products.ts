@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, jsonb, boolean } from "drizzle-orm/pg-core";
 import { users } from "./auth";
 import { sql } from "drizzle-orm";
 
@@ -15,5 +15,8 @@ export const products = pgTable("products", {
     category: jsonb('category').array(),
     license: text('license'),
     createdAt: timestamp('created_at').notNull(),
-    updatedAt: timestamp('updated_at').notNull()
+    updatedAt: timestamp('updated_at').notNull(),
+    deletedAt: timestamp('deleted_at'),
+    deletedBy: text('deleted_by'),
+    deletionReason: text('deletion_reason')
 });

@@ -16,6 +16,7 @@ export const notifications = pgTable("notifications", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   read: boolean("read").default(false).notNull(),
   actorId: text("actor_id"),
+  metadata: text("metadata"), // JSON string for additional data like product name, appeal status
 });
 
 export const notificationsRelations = relations(notifications, ({ one }) => ({
