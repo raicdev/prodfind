@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { authedProcedure, baseProcedure, createTRPCRouter } from '@/trpc/init'
 import { db } from '@/lib/db';
-import { eq, sql, desc, getTableColumns, and, isNull } from 'drizzle-orm';
+import { eq, sql, desc, getTableColumns, and, isNull, SQL } from 'drizzle-orm';
 import {
   products as productsTable,
   users as usersTable,
@@ -69,13 +69,13 @@ export const appRouter = createTRPCRouter({
         .$dynamic();
 
       // Only show non-deleted products
-      let whereConditions = isNull(productsTable.deletedAt);
+      let whereConditions = isNull(productsTable.deletedAt) as SQL<unknown> | undefined;
       
       if (input.userId) {
         whereConditions = and(whereConditions, eq(productsTable.authorId, input.userId));
       }
       
-      qb = qb.where(whereConditions);
+      qb = qb.where(whereConditions as SQL<unknown>);
 
       const products = await qb.orderBy(desc(productsTable.createdAt));
 
