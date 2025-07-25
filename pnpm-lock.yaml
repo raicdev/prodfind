@@ -4020,7 +4020,7 @@ packages:
     engines: {node: '>= 0.4'}
 
   set-proto@1.0.0:
-    resolution: {integrity: sha512-RJRdvCo6IAnPdsvP/7m6bsQqNnn1FCBX5ZNtFL98MmFF/4ProdfindJTIg1YbHW5DC2W5SKZanrC6i4HsJqlajw/dZw==}
+    resolution: {integrity: sha512-RJRdvCo6IAnPdsvP/7m6bsQqNnn1FCBX5ZNtFL98MmFF/4xAIJTIg1YbHW5DC2W5SKZanrC6i4HsJqlajw/dZw==}
     engines: {node: '>= 0.4'}
 
   sharp@0.34.3:
