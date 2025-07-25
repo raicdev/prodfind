@@ -21,8 +21,8 @@ export const contactRouter = createTRPCRouter({
       try {
         // Send email using Resend
         const data = await resend.emails.send({
-          from: "Prodfind Contact <no-reply@prodfind.space>", // Replace with your verified domain
-          to: ["master@prodfind.space"], // Replace with your contact email
+          from: "Prodfind Contact <no-reply@prodfind.space>",
+          to: ["master@prodfind.space"],
           subject: `Contact Form: ${subject}`,
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -62,7 +62,7 @@ Sent at: ${new Date().toLocaleString()}
 
         // Also send a confirmation email to the user
         await resend.emails.send({
-          from: "Prodfind <hello@prodfind.space>", // Replace with your verified domain
+          from: "Prodfind <hello@prodfind.space>",
           to: [email],
           subject: "Thank you for contacting Prodfind",
           html: `
