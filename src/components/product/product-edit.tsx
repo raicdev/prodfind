@@ -57,6 +57,7 @@ export function ProductEdit({
   const [editForm, setEditForm] = useState({
     name: product.name,
     description: product.description || "",
+    shortDescription: product.shortDescription || "",
     price: product.price,
     category: (product.category as string[]) || [],
     links: product.links || [],
@@ -344,6 +345,26 @@ export function ProductEdit({
           }
           className="min-h-[150px]"
         />
+      </div>
+
+      {/* Short Description Edit */}
+      <div className="mt-8">
+        <h2 className="text-2xl font-semibold mb-4">Short Description</h2>
+        <Textarea
+          value={editForm.shortDescription}
+          onChange={(e) =>
+            setEditForm({
+              ...editForm,
+              shortDescription: e.target.value,
+            })
+          }
+          className="min-h-[75px]"
+          maxLength={100}
+          placeholder="A short summary of the product (max 100 characters)"
+        />
+        <p className="text-sm text-muted-foreground mt-1">
+          {editForm.shortDescription.length} / 100
+        </p>
       </div>
 
       {/* Links Edit */}

@@ -1,0 +1,8 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+
+use pnpm for package manager.
+use trpc for endpoints.

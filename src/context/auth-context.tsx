@@ -11,11 +11,6 @@ type AuthContextType = {
   session: ReturnType<typeof authClient.useSession>["data"] | null;
   isPending: boolean;
   error: ReturnType<typeof authClient.useSession>["error"] | null;
-  signIn: typeof authClient.signIn & {
-    twoFactor: typeof authClient.twoFactor;
-  };
-  signUp: typeof authClient.signUp;
-  signOut: typeof authClient.signOut;
   auth: typeof authClient;
 };
 
@@ -30,12 +25,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session,
         isPending,
         error,
-        signIn: {
-          ...authClient.signIn,
-          twoFactor: authClient.twoFactor,
-        },
-        signUp: authClient.signUp,
-        signOut: authClient.signOut,
         auth: authClient,
       }}
     >

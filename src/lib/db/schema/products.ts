@@ -7,6 +7,7 @@ export const products = pgTable("products", {
     authorId: text('author_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     name: text('name').notNull(),
     description: text('description'),
+    shortDescription: text('short_description'),
     price: text('price').notNull(),
     images: jsonb('images'),
     icon: text('icon'),

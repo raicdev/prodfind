@@ -20,9 +20,11 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "@/context/auth-context";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function UserMenu() {
-  const { session, signOut } = useAuth();
+  const router = useRouter();
+  const { session, auth } = useAuth();
   const uuid = uuidv4().slice(0, 8);
 
   if (!session) {
@@ -68,6 +70,16 @@ export default function UserMenu() {
       </DropdownMenu>
     );
   }
+
+  const handleLogout = async () => {
+    await auth.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/");
+        },
+      },
+    });
+  };
 
   return (
     <DropdownMenu>
@@ -118,7 +130,7 @@ export default function UserMenu() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => signOut()}>
+        <DropdownMenuItem onClick={handleLogout}>
           <LogOutIcon size={16} className="opacity-60" aria-hidden="true" />
           <span>Logout</span>
         </DropdownMenuItem>

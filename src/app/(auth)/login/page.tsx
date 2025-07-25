@@ -14,7 +14,7 @@ import { TwoFactorDialog } from "@/components/ui/two-factor-dialog";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { signIn, auth, error: authError, isPending } = useAuth();
+  const { auth, error: authError, isPending } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [showTwoFactorDialog, setShowTwoFactorDialog] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
@@ -34,13 +34,13 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
     try {
-      const { error } = await signIn.email(
+      const { error } = await auth.signIn.email(
         {
           email: form.email,
           password: form.password,
         },
         {
-          async onSuccess(data) {
+          async onSuccess(data: any) {
             if (data.data?.twoFactorRedirect) {
               setShowTwoFactorDialog(true);
               return;
@@ -65,7 +65,7 @@ export default function LoginPage() {
   };
 
   const handleTwoFactorSubmit = async (code: string) => {
-    const { error } = await signIn.twoFactor.verifyTotp({
+    const { error } = await auth.twoFactor.verifyTotp({
       code,
       trustDevice: true,
     });
@@ -82,7 +82,7 @@ export default function LoginPage() {
 
   const handleSocialLogin = async (provider: string) => {
     try {
-      const data = await signIn.social({
+      const data = await auth.signIn.social({
         provider,
       });
       console.log(data);
