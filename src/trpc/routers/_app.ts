@@ -70,12 +70,12 @@ export const appRouter = createTRPCRouter({
         qb = qb.where(eq(productsTable.authorId, input.userId));
       }
 
-      const products = await qb.orderBy(desc(recommendationCountsSubquery.count));
+      const products = await qb.orderBy(desc(productsTable.createdAt));
 
       return products.map((p) => ({
         ...p,
         recommendationCount: p.recommendationCount || 0,
-      }));
+      })).sort((a, b) => (b.recommendationCount || 0) - (a.recommendationCount || 0));
     }),
   /**
    * Create product
@@ -135,6 +135,7 @@ export const appRouter = createTRPCRouter({
         productId: z.string(),
         name: z.string().optional(),
         description: z.string().optional(),
+        shortDescription: z.string().optional(),
         price: z.string().optional(),
         category: z.array(z.string()).optional(),
         links: z.array(ProductLinkSchema.omit({ id: true })).optional(),
