@@ -21,6 +21,24 @@ export function Footer() {
           >
             Features
           </Link>
+          <Link
+            href="/terms"
+            className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+          >
+            Terms
+          </Link>
+          <Link
+            href="/privacy"
+            className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+          >
+            Privacy
+          </Link>
+          <Link
+            href="/contact"
+            className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+          >
+            Contact
+          </Link>
           <a
             href="https://github.com/prodfind"
             target="_blank"

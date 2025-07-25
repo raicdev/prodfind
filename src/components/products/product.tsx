@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import { Product as ProductType } from "@/types/product";
 import {
   Card,
@@ -19,6 +21,12 @@ import {
 } from "../ui/tooltip";
 
 export function Product({ product }: { product: ProductType | null }) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   // This component should render the product details
   if (!product) {
     return (
@@ -81,7 +89,10 @@ export function Product({ product }: { product: ProductType | null }) {
                   <div className="flex items-center gap-1">
                     <CalendarRange size="18" />
                     <span className="text-sm">
-                      {new Date(product.createdAt).toLocaleDateString()}
+                      {isClient 
+                        ? new Date(product.createdAt).toLocaleDateString()
+                        : new Date(product.createdAt).toISOString().split('T')[0]
+                      }
                     </span>
                   </div>
                 </TooltipTrigger>
@@ -97,7 +108,10 @@ export function Product({ product }: { product: ProductType | null }) {
                   <div className="flex items-center gap-1">
                     <RefreshCcw size="18" />
                     <span className="text-sm">
-                      {new Date(product.updatedAt).toLocaleDateString()}
+                      {isClient 
+                        ? new Date(product.updatedAt).toLocaleDateString()
+                        : new Date(product.updatedAt).toISOString().split('T')[0]
+                      }
                     </span>
                   </div>
                 </TooltipTrigger>
