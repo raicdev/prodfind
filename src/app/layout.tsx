@@ -8,6 +8,7 @@ import { BotIdClient } from "botid/client";
 import { Toaster } from "sonner";
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
+import { Analytics } from "@vercel/analytics/next";
 
 // Define the paths that need bot protection.
 // These are paths that are routed to by your app.
@@ -68,6 +69,7 @@ export default function RootLayout({
                 {children}
               </Suspense>
               <Toaster position="top-right" richColors />
+              <Analytics />
             </AuthProvider>
           </TRPCProvider>
         </ThemeProvider>

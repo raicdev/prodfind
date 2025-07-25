@@ -334,7 +334,7 @@ export function ProductEdit({
 
       {/* Description Edit */}
       <div className="mt-8">
-        <h2 className="text-2xl font-semibold mb-4">About this product</h2>
+        <h2 className="text-2xl font-semibold mb-4">About this product (Supports Markdown)</h2>
         <Textarea
           value={editForm.description}
           onChange={(e) =>
