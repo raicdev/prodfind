@@ -5,14 +5,14 @@ Thank you for your interest in contributing to Prodfind! This document provides 
 ## Getting Started
 
 1. Fork the repository
-2. Clone your fork: `git clone https://github.com/teamzisty/prodfind.git`
+2. Clone your fork: `git clone https://github.com/yourusername/prodfind.git`
 3. Install dependencies: `pnpm install`
 4. Start development server: `pnpm dev`
 
 ## Development Setup
 
 ### Prerequisites
-- Node.js 18+ 
+- Node.js 18.18+ 
 - pnpm package manager
 - PostgreSQL database
 

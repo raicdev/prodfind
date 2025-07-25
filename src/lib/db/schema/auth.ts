@@ -96,3 +96,11 @@ export const twoFactors = pgTable("two_factors", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
 });
+
+// Safe user columns for public exposure
+export const SAFE_USER_COLUMNS = {
+  id: users.id,
+  name: users.name,
+  image: users.image,
+  createdAt: users.createdAt,
+} as const;

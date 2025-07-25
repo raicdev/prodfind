@@ -41,6 +41,19 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Prodfind - Fastest way to find products",
   description: "Find the best products quickly and easily",
+  icons: {
+    icon: "/favicon.ico",
+  },
+  openGraph: {
+    images: ["/banner.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Prodfind - Fastest way to find products",
+    description: "Find the best products quickly and easily",
+    images: ["/banner.png"],
+  },
+  metadataBase: new URL("https://prodfind.space"),
 };
 
 export default function RootLayout({

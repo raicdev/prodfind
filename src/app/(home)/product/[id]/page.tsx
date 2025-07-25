@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { trpc } from "@/trpc/server";
 import { HydrateClient } from "@/trpc/server";
 import { ProductDetail } from "@/components/product/product-detail";
+import { ProductWithAuthor } from "@/types/product";
 
 interface ProductDetailPageProps {
   params: Promise<{ id: string }>;
@@ -33,7 +34,7 @@ export default async function ProductDetailPage({
     <HydrateClient>
       <div className="container mx-auto px-4 py-8 min-h-screen">
         <ProductDetail
-          product={product}
+          product={product as unknown as ProductWithAuthor}
           bookmarkStatus={bookmarkStatus}
           recommendationStatus={recommendationStatus}
         />

@@ -1,4 +1,10 @@
 import React from "react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Terms of Service - Prodfind",
+  description: "Terms of Service for Prodfind",
+};
 
 export default function TermsPage() {
   return (

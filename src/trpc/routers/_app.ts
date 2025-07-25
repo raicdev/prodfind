@@ -8,6 +8,7 @@ import {
   bookmarks as bookmarksTable,
   recommendations as recommendationsTable,
   notifications as notificationsTable,
+  SAFE_USER_COLUMNS,
 } from '@/lib/db/schema';
 import {
   ProductSchema,
@@ -21,6 +22,7 @@ import { notificationsRouter } from './notifications';
 import { TRPCError } from '@trpc/server';
 import { usersRouter } from './users';
 import { contactRouter } from './contact';
+import { SafeUser } from '@/types/user';
 
 const CreateProductSchema = ProductSchema.omit({
   id: true,
@@ -121,7 +123,9 @@ export const appRouter = createTRPCRouter({
 
     const productData = product[0];
 
-    const author = await db.select().from(usersTable).where(eq(usersTable.id, productData.authorId));
+    const author = await db.select(SAFE_USER_COLUMNS)
+      .from(usersTable)
+      .where(eq(usersTable.id, productData.authorId));
 
     const recommendationCount = await db
       .select({
@@ -132,9 +136,9 @@ export const appRouter = createTRPCRouter({
 
     return {
       ...productData,
-      author: author[0],
-      recommendationCount: recommendationCount[0].count || 0,
-    } as ProductWithAuthor;
+      author: author[0] as unknown as SafeUser,
+      recommendationCount: recommendationCount[0]?.count || 0,
+    };
   }),
   /**
    * Update product
@@ -419,7 +423,12 @@ export const appRouter = createTRPCRouter({
     const appealedNotifications = await db
       .select({
         notification: notificationsTable,
-        user: usersTable,
+        user: {
+          id: usersTable.id,
+          name: usersTable.name,
+          image: usersTable.image,
+          createdAt: usersTable.createdAt,
+        },
         product: productsTable
       })
       .from(notificationsTable)

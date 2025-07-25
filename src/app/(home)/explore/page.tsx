@@ -3,11 +3,12 @@ import { Products } from "@/components/products/products"
 import { Skeleton } from "@/components/ui/skeleton"
 import { trpc } from "@/trpc/server";
 import { Products as ProductsType } from "@/types/product";
+import { Metadata } from "next";
 
-export const metadata = {
-  title: "Explore Products",
+export const metadata: Metadata = {
+  title: "Explore Products - Prodfind",
   description: "Discover and explore the latest products",
-}
+};
 
 export default async function ExplorePage() {
   const products = await trpc.getProducts({}) as ProductsType;
