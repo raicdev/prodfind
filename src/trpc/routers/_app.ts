@@ -383,6 +383,19 @@ export const appRouter = createTRPCRouter({
 
       const metadata = notification[0].metadata ? JSON.parse(notification[0].metadata) : {};
 
+      await db.insert(notificationsTable).values({
+        userId: notification[0].userId,
+        action: "appeal_rejected",
+        target: notification[0].target,
+        read: false,
+        createdAt: new Date(),
+        actorId: ctx.session.user.id,
+        metadata: JSON.stringify({
+          productName: metadata.productName,
+          message: "Your appeal was reviewed and rejected"
+        }),
+      });
+
       // Update the metadata to mark appeal as rejected
       await db
         .update(notificationsTable)

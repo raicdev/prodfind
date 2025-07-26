@@ -21,7 +21,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useUploadThing } from "@/lib/uploadthing";
-import { Edit, Save, X, Trash2, ExternalLink } from "lucide-react";
+import { Edit, Save, X, Trash2 } from "lucide-react";
 import { ProductWithAuthor } from "@/types/product";
 import {
   Select,
@@ -30,13 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-const LinkIcon = ({ link }: { link: { title: string; url: string } }) => {
-  if (!link.title && !link.url)
-    return <ExternalLink className="w-5 h-5 text-muted-foreground" />;
-  // Link icon logic here - same as in original file
-  return <ExternalLink className="w-5 h-5 text-muted-foreground" />;
-};
+import { LinkIcon } from "@/components/link-icon";
 
 interface ProductEditProps {
   product: ProductWithAuthor;
