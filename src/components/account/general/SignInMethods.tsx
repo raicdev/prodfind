@@ -71,7 +71,9 @@ export function SignInMethods({ user }: Props) {
 
   return (
     <>
-      <h3 className="mt-8 text-2xl font-semibold tracking-tight">Sign-in methods</h3>
+      <h3 className="mt-8 text-2xl font-semibold tracking-tight">
+        Sign-in methods
+      </h3>
       <p className="text-muted-foreground">
         Manage your ways of logging into Prodfind.
       </p>
@@ -93,7 +95,11 @@ export function SignInMethods({ user }: Props) {
                 onClick={() => handleDisconnect("credential")}
                 disabled={isPending || user.accounts.length === 1}
               >
-                {isPending ? "Disconnecting..." : user.accounts.length === 1 ? "Cannot disable" : "Disable"}
+                {isPending
+                  ? "Disconnecting..."
+                  : user.accounts.length === 1
+                    ? "Cannot disable"
+                    : "Disable"}
               </Button>
             ) : (
               <Button
@@ -157,11 +163,11 @@ export function SignInMethods({ user }: Props) {
                 </p>
               </div>
             </div>
-            {/* {githubProvider ? (
+            {githubProvider ? (
               <Button
                 variant="outline"
                 onClick={() => handleDisconnect("github")}
-                disabled={isPending}
+                disabled={isPending || user.accounts.length === 1}
               >
                 {isPending ? "Disconnecting..." : "Disable"}
               </Button>
@@ -173,11 +179,7 @@ export function SignInMethods({ user }: Props) {
               >
                 {isPending ? "Connecting..." : "Connect"}
               </Button>
-            )} */}
-
-            <Button variant="outline" disabled>
-              Soon
-            </Button>
+            )}
           </div>
         </CardContent>
       </Card>

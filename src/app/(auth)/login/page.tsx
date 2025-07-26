@@ -171,12 +171,10 @@ export default function LoginPage() {
             </Button>
             <Button
               variant="outline"
-              disabled
               onClick={() => handleSocialLogin("github")}
             >
               <SiGithub size={18} />
-              {/* Sign in with GitHub */}
-              Soon
+              Sign in with GitHub
             </Button>
           </div>
           <div className="mt-6 text-center text-sm text-muted-foreground">

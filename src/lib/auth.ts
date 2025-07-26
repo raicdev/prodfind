@@ -48,11 +48,11 @@ export const auth = betterAuth({
             clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
         },
-        // github: {
-        //     enabled: true,
-        //     clientId: process.env.GITHUB_CLIENT_ID!,
-        //     clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-        // },
+        github: {
+            enabled: true,
+            clientId: process.env.GITHUB_CLIENT_ID!,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+        },
     },
     trustedOrigins: [process.env.NEXT_PUBLIC_BETTER_AUTH_URL!],
     user: {
