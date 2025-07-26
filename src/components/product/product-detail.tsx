@@ -29,66 +29,7 @@ import { ProductWithAuthor } from "@/types/product";
 import { useState } from "react";
 import { getLicenseText } from "@/lib/licenses";
 import { Markdown } from "../products/markdown";
-
-const LinkIcon = ({ link }: { link: { title: string; url: string } }) => {
-  if (!link.title && !link.url)
-    return <LinkIconLucide className="w-5 h-5 text-muted-foreground" />;
-
-  const normalizedTitle = link.title.toLowerCase();
-  const normalizedUrl = link.url.toLowerCase();
-
-  if (
-    normalizedTitle.includes("github") ||
-    normalizedUrl.includes("github.com")
-  )
-    return <SiGithub className="w-5 h-5" />;
-  if (
-    normalizedTitle.includes("twitter") ||
-    normalizedUrl.includes("x.com") ||
-    normalizedUrl.includes("twitter.com")
-  )
-    return <SiX className="w-5 h-5" />;
-  if (
-    normalizedTitle.includes("product hunt") ||
-    normalizedUrl.includes("producthunt.com")
-  )
-    return <SiProducthunt className="w-5 h-5" />;
-  if (
-    normalizedTitle.includes("app store") ||
-    normalizedUrl.includes("apps.apple.com")
-  )
-    return <SiAppstore className="w-5 h-5" />;
-  if (
-    normalizedTitle.includes("google play") ||
-    normalizedUrl.includes("play.google.com")
-  )
-    return <SiGoogleplay className="w-5 h-5" />;
-  if (
-    normalizedTitle.includes("discord") ||
-    normalizedUrl.includes("discord.gg") ||
-    normalizedUrl.includes("discord.com")
-  )
-    return <SiDiscord className="w-5 h-5" />;
-  if (
-    normalizedTitle.includes("facebook") ||
-    normalizedUrl.includes("facebook.com")
-  )
-    return <SiFacebook className="w-5 h-5" />;
-  if (
-    normalizedTitle.includes("instagram") ||
-    normalizedUrl.includes("instagram.com")
-  )
-    return <SiInstagram className="w-5 h-5" />;
-  if (
-    normalizedTitle.includes("youtube") ||
-    normalizedUrl.includes("youtube.com")
-  )
-    return <SiYoutube className="w-5 h-5" />;
-  if (normalizedTitle.includes("website") || normalizedUrl.includes("http"))
-    return <Globe className="w-5 h-5" />;
-
-  return <LinkIconLucide className="w-5 h-5 text-muted-foreground" />;
-};
+import { LinkIcon } from "../link-icon";
 
 interface ProductDetailProps {
   product: ProductWithAuthor;

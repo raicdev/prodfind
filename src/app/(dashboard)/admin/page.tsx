@@ -13,7 +13,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface AdminUser {
   id: string;
@@ -66,7 +72,9 @@ export default function AdminPage() {
   const adminRejectAppealMutation = trpc.adminRejectAppeal.useMutation();
   
   const [rejectionReason, setRejectionReason] = useState("");
-  const [selectedAppealId, setSelectedAppealId] = useState<string | null>(null);
+  const [deletionReason, setDeletionReason] = useState("");
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [confirmDeletion, setConfirmDeletion] = useState(false);
 
   useEffect(() => {
     if (productsData) {
@@ -104,19 +112,18 @@ export default function AdminPage() {
     });
   };
 
-  const deleteProduct = (product: Product) => {
-    if (!confirm(`Are you sure you want to delete "${product.name}" for Terms of Service violation?`)) {
-      return;
-    }
-
+  const deleteProduct = (product: Product, reason: string) => {
     startTransition(async () => {
       try {
         await adminDeleteProductMutation.mutateAsync({ 
           productId: product.id,
-          reason: "Violates Terms of Service"
+          reason: reason.trim() || "Violates Terms of Service"
         });
         toast.success("Product deleted and user notified");
         refetchProducts();
+        setDeletionReason("");
+        setSelectedProductId(null);
+        setConfirmDeletion(false);
       } catch (error) {
         toast.error("Failed to delete product", { 
           description: error instanceof Error ? error.message : "Unknown error" 
@@ -156,7 +163,6 @@ export default function AdminPage() {
         toast.success("Appeal rejected");
         refetchAppeals();
         setRejectionReason("");
-        setSelectedAppealId(null);
       } catch (error) {
         toast.error("Failed to reject appeal", { 
           description: error instanceof Error ? error.message : "Unknown error" 
@@ -231,7 +237,7 @@ export default function AdminPage() {
                 <div>
                   <p className="font-medium">{product.name}</p>
                   <p className="text-sm text-muted-foreground">
-                    ID: {product.id} • Author: {product.authorId}
+                    ID: {product.id}
                   </p>
                   {product.description && (
                     <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
@@ -239,20 +245,75 @@ export default function AdminPage() {
                     </p>
                   )}
                 </div>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => deleteProduct(product)}
-                  disabled={isPending}
-                >
-                  {isPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <>
-                      <Trash2 className="h-4 w-4 mr-2" /> Delete for ToS
-                    </>
-                  )}
-                </Button>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedProductId(product.id);
+                        setConfirmDeletion(false);
+                        setDeletionReason("");
+                      }}
+                      disabled={isPending}
+                    >
+                      {isPending ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <>
+                          <Trash2 className="h-4 w-4 mr-2" /> Delete for ToS
+                        </>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-medium mb-2">Delete Product</h4>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          You are about to delete "{product.name}". Please specify a reason for the Terms of Service violation.
+                        </p>
+                      </div>
+                      <Textarea
+                        placeholder="Reason for deletion (e.g., inappropriate content, spam, etc.)"
+                        value={selectedProductId === product.id ? deletionReason : ""}
+                        onChange={(e) => setDeletionReason(e.target.value)}
+                        className="min-h-[80px]"
+                      />
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="confirm-deletion"
+                          checked={confirmDeletion}
+                          onCheckedChange={(checked) => setConfirmDeletion(checked === true)}
+                        />
+                        <label htmlFor="confirm-deletion" className="text-sm font-medium">
+                          I confirm that I want to delete this product
+                        </label>
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setDeletionReason("");
+                            setSelectedProductId(null);
+                            setConfirmDeletion(false);
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => deleteProduct(product, deletionReason)}
+                          disabled={adminDeleteProductMutation.isPending || !confirmDeletion}
+                        >
+                          {adminDeleteProductMutation.isPending ? "Deleting..." : "Delete"}
+                        </Button>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </div>
             ))}
           </div>
@@ -324,7 +385,7 @@ export default function AdminPage() {
                           <Button
                             size="sm"
                             variant="destructive"
-                            onClick={() => setSelectedAppealId(appeal.notification.id)}
+                            onClick={() => {}}
                             disabled={isPending}
                           >
                             <XCircle className="h-4 w-4 mr-1" />
@@ -351,7 +412,6 @@ export default function AdminPage() {
                                 variant="outline"
                                 onClick={() => {
                                   setRejectionReason("");
-                                  setSelectedAppealId(null);
                                 }}
                               >
                                 Cancel

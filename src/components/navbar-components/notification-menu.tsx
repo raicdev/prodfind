@@ -1,6 +1,13 @@
 "use client";
 
-import { BellIcon, AlertTriangle, Sparkles, Bookmark } from "lucide-react";
+import {
+  BellIcon,
+  AlertTriangle,
+  Sparkles,
+  Bookmark,
+  CheckCircle,
+  RefreshCcwIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -34,10 +41,11 @@ export default function NotificationMenu() {
   const { session } = useAuth();
   const router = useRouter();
 
-  const { data: notifications, isLoading } = trpc.notifications.get.useQuery(
-    undefined,
-    { enabled: !!session }
-  );
+  const {
+    data: notifications,
+    isLoading,
+    refetch,
+  } = trpc.notifications.get.useQuery(undefined, { enabled: !!session });
 
   const markAsReadMutation = trpc.notifications.markAsRead.useMutation({
     onSuccess: () => {
@@ -74,10 +82,41 @@ export default function NotificationMenu() {
           <span className="text-foreground font-medium">
             &quot;{metadata.productName || "Unknown Product"}&quot;
           </span>{" "}
-          was removed for &quot;{metadata.reason || "unknown reason"}&quot;.
+          was removed for violating our Terms of Service.
         </Link>
       );
     }
+
+    if (notification.action === "product_restored") {
+      const metadata = notification.metadata
+        ? JSON.parse(notification.metadata)
+        : {};
+      return (
+        <Link href={`/product/${notification.target}`}>
+          Congrats! Your product{" "}
+          <span className="text-foreground font-medium">
+            &quot;{metadata.productName || "Unknown Product"}&quot;
+          </span>{" "}
+          was restored.
+        </Link>
+      );
+    }
+
+    if (notification.action === "appeal_rejected") {
+      const metadata = notification.metadata
+        ? JSON.parse(notification.metadata)
+        : {};
+      return (
+        <>
+          Sorry, your appeal was rejected for the product{" "}
+          <span className="text-foreground font-medium">
+            &quot;{metadata.productName || "Unknown Product"}&quot;
+          </span>{" "}
+          with the reason &quot;{metadata.message || "violated our Terms of Service"}&quot;.
+        </>
+      );
+    }
+    
 
     // Default format for other notifications
     return (
@@ -112,17 +151,30 @@ export default function NotificationMenu() {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-1">
-        <div className="flex items-baseline justify-between gap-4 px-3 py-2">
+      <PopoverContent className="w-80 p-1 max-h-[500px] overflow-y-auto">
+        <div className="flex items-center justify-between gap-4 px-3 py-2">
           <div className="text-sm font-semibold">Notifications</div>
-          {unreadCount > 0 && (
-            <button
-              className="text-xs font-medium hover:underline"
-              onClick={handleMarkAllAsRead}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="!p-0 !w-6 !h-6"
+              onClick={() => {
+                refetch();
+              }}
             >
-              Mark all as read
-            </button>
-          )}
+
+              <RefreshCcwIcon size={16} className={isLoading ? "animate-spin" : ""} />
+            </Button>
+            {unreadCount > 0 && (
+              <button
+                className="text-xs font-medium hover:underline"
+                onClick={handleMarkAllAsRead}
+              >
+                Mark all as read
+              </button>
+            )}
+          </div>
         </div>
         <div
           role="separator"
@@ -160,6 +212,12 @@ export default function NotificationMenu() {
                     )}
                     {notification.action === "bookmark" && (
                       <Bookmark className="inline w-4 h-4 mr-2 text-blue-500" />
+                    )}
+                    {notification.action === "product_restored" && (
+                      <CheckCircle className="inline w-4 h-4 mr-2 text-green-500" />
+                    )}
+                    {notification.action === "appeal_rejected" && (
+                      <AlertTriangle className="inline w-4 h-4 mr-2 text-red-500" />
                     )}
                     {getNotificationMessage(notification)}
                   </div>

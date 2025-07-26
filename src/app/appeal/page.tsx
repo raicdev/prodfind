@@ -21,7 +21,7 @@ export default function AppealPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const notificationId = searchParams.get("notificationId");
-  const { session } = useAuth();
+  const { session, isPending } = useAuth();
 
   const [appealMessage, setAppealMessage] = useState("");
   const [notification, setNotification] = useState<Notification | null>(null);
@@ -47,11 +47,14 @@ export default function AppealPage() {
       );
       if (foundNotification && foundNotification.action === "product_removed") {
         setNotification(foundNotification);
+      } else {
+        toast.error("Appeal not found");
+        router.replace("/dashboard");
       }
     }
   }, [notifications, notificationId]);
 
-  if (!session) {
+  if (!session && !isPending) {
     router.replace("/login");
     return null;
   }
