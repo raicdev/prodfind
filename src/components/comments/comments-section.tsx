@@ -9,6 +9,7 @@ import { CommentForm } from "./comment-form";
 import { CommentItem } from "./comment-item";
 import { trpc } from "@/trpc/client";
 import { useAuth } from "@/context/auth-context";
+import { CommentWithAuthor } from "@/types/comment";
 
 interface CommentsSectionProps {
   productId: string;
@@ -65,7 +66,7 @@ export function CommentsSection({ productId }: CommentsSectionProps) {
             {comments.map((comment) => (
               <CommentItem
                 key={comment.id}
-                comment={comment}
+                comment={comment as unknown as CommentWithAuthor}
                 productId={productId}
               />
             ))}
