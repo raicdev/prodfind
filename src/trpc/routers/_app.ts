@@ -12,7 +12,6 @@ import {
 } from '@/lib/db/schema';
 import {
   ProductSchema,
-  ProductWithAuthor,
   ProductLinkSchema,
   ProductImageSchema,
 } from '@/types/product';
@@ -22,6 +21,7 @@ import { notificationsRouter } from './notifications';
 import { TRPCError } from '@trpc/server';
 import { usersRouter } from './users';
 import { contactRouter } from './contact';
+import { commentsRouter } from './comments';
 import { SafeUser } from '@/types/user';
 
 const CreateProductSchema = ProductSchema.omit({
@@ -48,6 +48,7 @@ export const appRouter = createTRPCRouter({
   session: sessionRouter,
   notifications: notificationsRouter,
   contact: contactRouter,
+  comments: commentsRouter,
   /**
    * Get products
    */

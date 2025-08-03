@@ -5,23 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ProductActions } from "@/components/product/product-actions";
 import { ProductEdit } from "@/components/product/product-edit";
-import {
-  SiGithub,
-  SiX,
-  SiProducthunt,
-  SiAppstore,
-  SiGoogleplay,
-  SiDiscord,
-  SiFacebook,
-  SiInstagram,
-  SiYoutube,
-} from "@icons-pack/react-simple-icons";
-import {
-  Globe,
-  Link as LinkIconLucide,
-  ExternalLink,
-  BadgeCheck,
-} from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ProductGallery } from "@/components/product/product-gallery";
@@ -30,6 +14,7 @@ import { useState } from "react";
 import { getLicenseText } from "@/lib/licenses";
 import { Markdown } from "../products/markdown";
 import { LinkIcon } from "../link-icon";
+import { CommentsSection } from "../comments/comments-section";
 
 interface ProductDetailProps {
   product: ProductWithAuthor;
@@ -129,6 +114,11 @@ export function ProductDetail({
                   <Markdown content={product.description} />
                 </div>
               </div>
+
+              {/* Comments Section */}
+              <div className="mt-8">
+                <CommentsSection productId={product.id} />
+              </div>
             </TabsContent>
             <TabsContent value="creator" className="mt-6">
               <div>
@@ -151,7 +141,7 @@ export function ProductDetail({
                             <BadgeCheck className="!w-5 !h-5 text-primary" />
                           )} */}
                         </div>
-                        <p className="text-sm text-muted-foreground font-mono text-base">
+                        <p className="text-sm text-muted-foreground font-mono">
                           {product.author.id.slice(0, 6)}...
                           {product.author.id.slice(-6)}
                         </p>

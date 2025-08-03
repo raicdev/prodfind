@@ -22,7 +22,7 @@ export default async function ProductDetailPage({
       trpc.getBookmarkStatus({ productId: id }).catch(() => null),
       trpc.getRecommendationStatus({ productId: id }).catch(() => null),
     ]);
-  } catch (error) {
+  } catch {
     notFound();
   }
 
