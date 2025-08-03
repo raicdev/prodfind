@@ -27,9 +27,10 @@ interface CommentItemProps {
   comment: CommentWithAuthor;
   productId: string;
   level?: number;
+  maxDepth?: number;
 }
 
-export function CommentItem({ comment, productId, level = 0 }: CommentItemProps) {
+export function CommentItem({ comment, productId, level = 0, maxDepth = 3 }: CommentItemProps) {
   const { session } = useAuth();
   const user = session?.user;
   const [isReplying, setIsReplying] = useState(false);
@@ -65,7 +66,7 @@ export function CommentItem({ comment, productId, level = 0 }: CommentItemProps)
   });
 
   const handleUpdate = () => {
-    if (editContent.trim() === comment.content) {
+    if (editContent.trim() === comment.content.trim()) {
       setIsEditing(false);
       return;
     }
@@ -138,7 +139,7 @@ export function CommentItem({ comment, productId, level = 0 }: CommentItemProps)
             )}
             {!isEditing && (
               <div className="flex items-center gap-2 mt-2">
-                {user && level < 3 && (
+                {user && level < maxDepth && (
                   <Button
                     size="sm"
                     variant="ghost"

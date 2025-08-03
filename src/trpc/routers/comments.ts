@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { authedProcedure, baseProcedure, createTRPCRouter } from '@/trpc/init';
 import { db } from '@/lib/db';
-import { eq, sql, desc, and, isNull } from 'drizzle-orm';
+import { eq, desc, and, isNull, inArray } from 'drizzle-orm';
 import {
   comments as commentsTable,
   users as usersTable,
@@ -52,7 +52,7 @@ export const commentsRouter = createTRPCRouter({
         .from(commentsTable)
         .leftJoin(usersTable, eq(commentsTable.authorId, usersTable.id))
         .where(and(
-          sql`${commentsTable.parentId} IN ${sql`(${sql.join(commentIds.map(id => sql`${id}`), sql`, `)})`}`,
+          inArray(commentsTable.parentId, commentIds),
           isNull(commentsTable.deletedAt)
         ))
         .orderBy(commentsTable.createdAt) : [];

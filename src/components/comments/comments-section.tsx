@@ -18,7 +18,7 @@ export function CommentsSection({ productId }: CommentsSectionProps) {
   const { session } = useAuth();
   const [showCommentForm, setShowCommentForm] = useState(false);
 
-  const { data: comments, isLoading } = trpc.comments.getByProductId.useQuery({
+  const { data: comments, isLoading, error } = trpc.comments.getByProductId.useQuery({
     productId,
   });
 
@@ -55,6 +55,10 @@ export function CommentsSection({ productId }: CommentsSectionProps) {
         {isLoading ? (
           <div className="flex justify-center py-8">
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : error ? (
+          <div className="text-center py-8 text-red-500">
+            <p>Failed to load comments. Please try again</p>
           </div>
         ) : comments && comments.length > 0 ? (
           <div className="space-y-6">

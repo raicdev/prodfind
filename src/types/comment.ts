@@ -14,7 +14,12 @@ export const CommentSchema = z.object({
     deletionReason: z.string().nullable(),
 });
 
-export const CommentWithAuthorSchema: z.ZodType<any> = CommentSchema.extend({
+type CommentWithAuthorSchemaType = z.infer<typeof CommentSchema> & {
+    author: z.infer<typeof SafeUserSchema>;
+    replies?: CommentWithAuthorSchemaType[];
+};
+
+export const CommentWithAuthorSchema: z.ZodType<CommentWithAuthorSchemaType> = CommentSchema.extend({
     author: SafeUserSchema,
     replies: z.array(z.lazy(() => CommentWithAuthorSchema)).optional(),
 });
