@@ -73,7 +73,7 @@ export function ProductActions({
 
   const handleToggleBookmark = () => {
     if (!session) {
-      router.push("/auth/login");
+      router.push("/login");
       return;
     }
     if (bookmarkStatus?.isBookmarked) {
@@ -85,7 +85,7 @@ export function ProductActions({
 
   const handleToggleRecommendation = () => {
     if (!session) {
-      router.push("/auth/login");
+      router.push("/login");
       return;
     }
     if (recommendationStatus?.isRecommended) {
