@@ -11,8 +11,12 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ [
 
   return (
     <>
-      <Hero refer={refer as string || "default"} />
-      <div className="container mx-auto py-12">
+      <div className="container mx-auto py-10">
+        <div className="flex flex-col gap-1 pb-11">
+          <h1 className="text-3xl font-semibold">Let's find the best products together!</h1>
+          <p className="text-neutral-400">There products are randomly selected from Prodfind.</p>
+        </div>
+
         <Products initialProducts={products} />
       </div>
       <Features />

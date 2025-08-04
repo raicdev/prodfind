@@ -55,16 +55,10 @@ export default function UserMenu() {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem asChild>
-              <Link href="/login">
-                <LogInIcon
-                  size={16}
-                  className="text-muted-foreground"
-                  aria-hidden="true"
-                />
-                <span>Login</span>
-              </Link>
-            </DropdownMenuItem>
+              <DropdownMenuItem>
+                <LogInIcon />
+                Billing
+              </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
