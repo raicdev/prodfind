@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-import Link from "next/link"
 import {
     SidebarGroup,
     SidebarGroupContent,
@@ -37,12 +36,10 @@ export function NavMain({
                     {items.map((item) => (
                         item.title && item.url ? (
                             <SidebarMenuItem key={item.title}>
-                                <Link className="w-full" href={item.url}>
-                                    <SidebarMenuButton tooltip={item.title}>
-                                        {item.icon ? React.createElement(item.icon) : null}
-                                        <span>{item.title}</span>
-                                    </SidebarMenuButton>
-                                </Link>
+                                <SidebarMenuButton tooltip={item.title}>
+                                    {item.icon ? React.createElement(item.icon) : null}
+                                    <span>{item.title}</span>
+                                </SidebarMenuButton>
                             </SidebarMenuItem>
                         ) : (
                             <div className="py-1.5" key={item.title || Math.random()} />
