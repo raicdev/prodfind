@@ -21,13 +21,14 @@ import {
     Sparkles,
     Bookmark,
     Bell,
+    Telescope,
 } from "lucide-react"
 
 const data = {
     navMain: [
         {
             title: "Home",
-            url: "#",
+            url: "/",
             icon: House,
         },
         {
@@ -49,6 +50,15 @@ const data = {
             title: "Upcoming",
             url: "#",
             icon: Hourglass,
+        },
+        {
+            title: "",
+            url: "",
+        },
+        {
+            title: "Random Teleport",
+            url: "#",
+            icon: Telescope,
         },
         {
             title: "",
