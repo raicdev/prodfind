@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import Link from "next/link"
 import {
     SidebarGroup,
     SidebarGroupContent,
@@ -8,8 +9,8 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { Input } from "@/components/ui/input"
-import { Search, type Icon } from "lucide-react"
+import { type Icon } from "lucide-react"
+import { NavSearch } from "./nav-search"
 
 export function NavMain({
     items,
@@ -18,27 +19,36 @@ export function NavMain({
         title: string
         url: string
         icon?: typeof Icon,
+        invalid?: boolean
     }[]
 }) {
     return (
         <SidebarGroup>
             <SidebarGroupContent className="flex flex-col gap-2">
                 <SidebarMenu className="mb-2">
-                    <div className="relative">
-                        <Search className="absolute left-2 top-1/2 ml-0.5 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                        <Input
-                            placeholder="Search..."
-                            className="pl-8 pr-7"
-                        />
-                    </div>
+                    <NavSearch />
                 </SidebarMenu>
                 <SidebarMenu>
                     {items.map((item) => (
                         item.title && item.url ? (
                             <SidebarMenuItem key={item.title}>
-                                <SidebarMenuButton tooltip={item.title}>
-                                    {item.icon ? React.createElement(item.icon) : null}
-                                    <span>{item.title}</span>
+                                <SidebarMenuButton 
+                                    tooltip={item.title}
+                                    disabled={item.invalid}
+                                    className={item.invalid ? "opacity-50 cursor-not-allowed" : ""}
+                                    asChild={!item.invalid}
+                                >
+                                    {item.invalid ? (
+                                        <>
+                                            {item.icon ? React.createElement(item.icon) : null}
+                                            <span>{item.title}</span>
+                                        </>
+                                    ) : (
+                                        <Link href={item.url}>
+                                            {item.icon ? React.createElement(item.icon) : null}
+                                            <span>{item.title}</span>
+                                        </Link>
+                                    )}
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                         ) : (

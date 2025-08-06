@@ -21,34 +21,37 @@ import {
     Sparkles,
     Bookmark,
     Bell,
+    Search,
 } from "lucide-react"
 
 const data = {
     navMain: [
         {
             title: "Home",
-            url: "#",
+            url: "/",
             icon: House,
         },
         {
             title: "Ranking",
-            url: "#",
+            url: "/ranking",
             icon: Trophy,
         },
         {
             title: "New",
-            url: "#",
+            url: "/new",
             icon: PackagePlus,
         },
         {
             title: "Recommended",
-            url: "#",
+            url: "/recommended",
             icon: Sparkles,
+            invalid: true,
         },
         {
             title: "Upcoming",
-            url: "#",
+            url: "/upcoming",
             icon: Hourglass,
+            invalid: true,
         },
         {
             title: "",
@@ -56,12 +59,13 @@ const data = {
         },
         {
             title: "Notifications",
-            url: "#",
+            url: "/notifications",
             icon: Bell,
+            invalid: true,
         },
         {
             title: "Bookmarks",
-            url: "#",
+            url: "/dashboard/bookmarks",
             icon: Bookmark,
         },
     ],
