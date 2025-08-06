@@ -65,6 +65,7 @@ export function ProductDetail({
         <div className="flex-1">
           <h1 className="text-3xl font-semibold">{product.name}</h1>
           <div className="flex flex-wrap gap-2 mt-2">
+            <Badge className="capitalize">{product.visibility}</Badge>
             {(product.category as string[])?.map(
               (cat: string, index: number) => (
                 <Badge key={index} variant="outline">
