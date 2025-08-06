@@ -7,7 +7,6 @@ import {
     LogOutIcon,
     UserIcon,
     MessageCircleIcon,
-    InfoIcon,
     BookOpenIcon,
 } from "lucide-react";
 
@@ -97,13 +96,13 @@ export function NavUser() {
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
                                     <Link className="flex items-center gap-2 w-full" href="https://docs.prodfind.space/" target="_blank" rel="noopener noreferrer">
-                                        <DropdownMenuItem className="flex items-center gap-2 w-full">
+                                        <DropdownMenuItem className="flex items-center gap-2 w-full cursor-pointer">
                                             <BookOpenIcon />
                                             Docs
                                         </DropdownMenuItem>
                                     </Link>
                                     <Link className="flex items-center gap-2 w-full" href="https://discord.gg/teamzisty" target="_blank" rel="noopener noreferrer">
-                                        <DropdownMenuItem className="flex items-center gap-2 w-full">
+                                        <DropdownMenuItem className="flex items-center gap-2 w-full cursor-pointer">
                                             <MessageCircleIcon />
                                             <span className="flex items-center">Discord Server</span>
                                         </DropdownMenuItem>
@@ -111,7 +110,7 @@ export function NavUser() {
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
                                 <Link className="flex items-center gap-2 w-full" href="/login">
-                                    <DropdownMenuItem className="flex items-center gap-2 w-full">
+                                    <DropdownMenuItem className="flex items-center gap-2 w-full cursor-pointer">
                                         <LogInIcon
                                             size={16}
                                             className="text-muted-foreground"
@@ -191,23 +190,14 @@ export function NavUser() {
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem asChild>
-                                <Link href="/">
-                                    <HomeIcon size={16} className="opacity-60" aria-hidden="true" />
-                                    <span>Home</span>
-                                </Link>
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
                             <Link className="flex items-center gap-2 w-full" href="/account" target="_blank" rel="noopener noreferrer">
-                                <DropdownMenuItem className="flex items-center gap-2 w-full">
+                                <DropdownMenuItem className="flex items-center gap-2 w-full cursor-pointer">
                                     <UserIcon size={16} className="opacity-60" aria-hidden="true" />
                                     <span>Account</span>
                                 </DropdownMenuItem>
                             </Link>
                             <Link className="flex items-center gap-2 w-full" href="/dashboard" target="_blank" rel="noopener noreferrer">
-                                <DropdownMenuItem className="flex items-center gap-2 w-full">
+                                <DropdownMenuItem className="flex items-center gap-2 w-full cursor-pointer">
                                     <BoltIcon size={16} className="opacity-60" aria-hidden="true" />
                                     <span>Dashboard</span>
                                 </DropdownMenuItem>
@@ -216,20 +206,20 @@ export function NavUser() {
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                             <Link className="flex items-center gap-2 w-full" href="https://docs.prodfind.space/" target="_blank" rel="noopener noreferrer">
-                                <DropdownMenuItem className="flex items-center gap-2 w-full">
+                                <DropdownMenuItem className="flex items-center gap-2 w-full cursor-pointer">
                                     <BookOpenIcon />
                                     Docs
                                 </DropdownMenuItem>
                             </Link>
                             <Link className="flex items-center gap-2 w-full" href="https://discord.gg/teamzisty" target="_blank" rel="noopener noreferrer">
-                                <DropdownMenuItem className="flex items-center gap-2 w-full">
+                                <DropdownMenuItem className="flex items-center gap-2 w-full cursor-pointer">
                                     <MessageCircleIcon />
                                     <span className="flex items-center">Discord Server</span>
                                 </DropdownMenuItem>
                             </Link>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={handleLogout}>
+                        <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
                             <LogOutIcon size={16} className="opacity-60" aria-hidden="true" />
                             <span>Logout</span>
                         </DropdownMenuItem>

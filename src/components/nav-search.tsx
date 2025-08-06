@@ -56,7 +56,6 @@ export function NavSearch() {
                     { icon: House, label: "Home", url: "/dashboard" },
                     { icon: Package, label: "Products", url: "/dashboard/products" },
                     { icon: Bookmark, label: "Bookmarks", url: "/dashboard/bookmarks" },
-                    { icon: Bell, label: "Notifications", url: "/notifications" },
                     { icon: Sparkles, label: "Recommendations", url: "/dashboard/recommendations" },
                     { icon: Telescope, label: "Explore", url: "/dashboard/explore" },
                 ]
