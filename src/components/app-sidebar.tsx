@@ -21,7 +21,6 @@ import {
     Hourglass,
     Sparkles,
     Bookmark,
-    Bell,
 } from "lucide-react"
 
 const data = {
