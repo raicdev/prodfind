@@ -72,7 +72,6 @@ export const appRouter = createTRPCRouter({
           recommendationCountsSubquery,
           eq(productsTable.id, recommendationCountsSubquery.productId),
         )
-        .where(eq(productsTable.visibility, "public"))
         .$dynamic();
 
       // Build where conditions
