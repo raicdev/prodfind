@@ -16,7 +16,6 @@ import {
   ProductImageSchema,
   ProductVisibilitySchema,
 } from "@/types/product";
-import { checkBotId } from "botid/server";
 import { sessionRouter } from "./session";
 import { notificationsRouter } from "./notifications";
 import { TRPCError } from "@trpc/server";

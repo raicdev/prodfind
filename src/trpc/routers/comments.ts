@@ -10,9 +10,7 @@ import {
   SAFE_USER_COLUMNS,
 } from '@/lib/db/schema';
 import { CommentSchema, CommentWithAuthor } from '@/types/comment';
-import { checkBotId } from 'botid/server';
 import { TRPCError } from '@trpc/server';
-
 
 const CreateCommentSchema = CommentSchema.omit({
   id: true,
