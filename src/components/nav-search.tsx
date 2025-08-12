@@ -9,7 +9,6 @@ import {
   Hourglass,
   Sparkles,
   Bookmark,
-  Bell,
   House,
   Package,
   Telescope,
@@ -27,6 +26,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import type { LucideIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function NavSearch() {
@@ -42,7 +42,7 @@ export function NavSearch() {
   const commandGroups: Array<{
     heading?: string;
     items: Array<{
-      icon: any;
+      icon: LucideIcon;
       label: string;
       url: string;
       disabled?: boolean;
@@ -109,13 +109,13 @@ export function NavSearch() {
           <CommandEmpty>No results found.</CommandEmpty>
           {commandGroups.map((group, groupIndex) => (
             <React.Fragment key={groupIndex}>
-              <CommandGroup className="py-2!" heading={group.heading}>
+              <CommandGroup className="!py-2" heading={group.heading}>
                 {group.items.map((item) => (
                   <CommandItem
-                    className={`py-2! hover:cursor-pointer ${item.disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                    className={`!py-2 hover:cursor-pointer ${item.disabled ? "opacity-50 cursor-not-allowed" : ""}`}
                     key={item.label}
                     disabled={!!item.disabled}
-                    onClick={() => handleItemClick(item.url, item.disabled)}
+                    onSelect={() => handleItemClick(item.url, item.disabled)}
                   >
                     <item.icon className="mr-2 h-4 w-4" />
                     <span>{item.label}</span>
