@@ -81,14 +81,6 @@ export const commentsRouter = createTRPCRouter({
   create: authedProcedure
     .input(CreateCommentSchema)
     .mutation(async ({ input, ctx }) => {
-      const botCheck = await checkBotId();
-      if (botCheck.isBot) {
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'Bot verification failed',
-        });
-      }
-
       const [comment] = await db
         .insert(commentsTable)
         .values({
@@ -150,14 +142,6 @@ export const commentsRouter = createTRPCRouter({
       content: z.string(),
     }))
     .mutation(async ({ input, ctx }) => {
-      const botCheck = await checkBotId();
-      if (botCheck.isBot) {
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'Bot verification failed',
-        });
-      }
-
       const [existingComment] = await db
         .select()
         .from(commentsTable)
@@ -195,14 +179,6 @@ export const commentsRouter = createTRPCRouter({
       reason: z.string().optional(),
     }))
     .mutation(async ({ input, ctx }) => {
-      const botCheck = await checkBotId();
-      if (botCheck.isBot) {
-        throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'Bot verification failed',
-        });
-      }
-
       const [existingComment] = await db
         .select()
         .from(commentsTable)
