@@ -73,7 +73,7 @@ export function NavSearch() {
           label: "Recommendations",
           url: "/dashboard/recommendations",
         },
-        { icon: Telescope, label: "Explore", url: "/dashboard/ranking" },
+        { icon: Telescope, label: "Explore", url: "/dashboard/explore" },
       ],
     },
     {
